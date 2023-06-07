@@ -1,0 +1,19 @@
+RewriteEngine on
+Options +FollowSymLinks
+RewriteCond %{HTTP_HOST} ^helpsport\.app$
+RewriteRule ^/?$ "https\:\/\/www\.helpsport\.site\/"
+RewriteRule ^favicon.ico assets/images/favicon.ico [L]
+
+
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php
+
+
