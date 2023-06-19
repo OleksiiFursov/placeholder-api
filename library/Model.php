@@ -29,7 +29,7 @@ class Model
     {
         $model = $args['model'] ?? $this->model ?? null;
 
-        $name_alt = $model ? (new $model)::get_name_alt().'.': '';
+        $table_name_alt = $model ? (new $model)::get_table_name_alt().'.': '';
 
 
         $res = [
@@ -80,9 +80,9 @@ class Model
             $args['filters_params'] = $args['filters_params'] ?? [];
 
             $args['filters_params'] = array_merge([
-                'number' => $name_alt . 'id',
-                'string' => $name_alt . 'name',
-                'number_array' => $name_alt . 'id'
+                'number' => $table_name_alt . 'id',
+                'string' => $table_name_alt . 'name',
+                'number_array' => $table_name_alt . 'id'
             ], $args['filters_params']);
 
 
@@ -90,11 +90,11 @@ class Model
             foreach($res['filters'] as $k=> $vFilter){
                 if(!str_contains($k, '.')){
                     unset($res['filters'][$k]);
-                    $res['filters'][$name_alt.$k] = $vFilter;
+                    $res['filters'][$table_name_alt.$k] = $vFilter;
                 }
             }
-            if (!isset($res['filters'][$name_alt . 'status'])) {
-                $res['filters'][$name_alt.'status'] = [0, '>'];
+            if (!isset($res['filters'][$table_name_alt . 'status'])) {
+                $res['filters'][$table_name_alt.'status'] = [0, '>'];
             //     notice('Почему то я тут'); По дефолту статус 1
             }
         }
@@ -197,7 +197,7 @@ class Model
     {
         if (empty($filter)) return $def;
         if (is_array($filter)) {
-            if (isAssoc($filter)) {
+            if (is_assoc($filter)) {
 
                 foreach ($filter as $k => $v) {
                     if ($v === 'null') {
@@ -287,7 +287,7 @@ class Model
             return [];
         }
 
-        if (isAssoc($args)) {
+        if (is_assoc($args)) {
             return $args;
         }
 

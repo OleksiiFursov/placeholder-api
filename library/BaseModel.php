@@ -13,8 +13,8 @@ class BaseModel
         return $db->count(static::$table, $id) > 0;
     }
 
-    static function get_name_alt(){
-        return static::$name_alt ?? static::$table;
+    static function get_table_name_alt(){
+        return static::$table_name_alt ?? static::$table;
     }
     static function getById($id)
     {
@@ -44,7 +44,7 @@ class BaseModel
         $col = static::columnsSafe();
 
         for ($i = 0, $len = sizeof($col); $i < $len; $i++) {
-            $col[$i] = static::$name_alt . '.' . $col[$i];
+            $col[$i] = static::$table_name_alt . '.' . $col[$i];
         }
         return $col;
     }
@@ -63,7 +63,7 @@ class BaseModel
         }
         if (!$prefix)
             return $columns;
-        return array_map(fn ($item) => (static::$name_alt ?? static::$table ). '.' . $item, $columns);
+        return array_map(fn ($item) => (static::$table_name_alt ?? static::$table ). '.' . $item, $columns);
     }
 
     static function getInitData()
@@ -129,9 +129,9 @@ class BaseModel
         }
         $res = $db->build()->select($col)->model(static::class)->where($where);
 
-        if(!isset($where['status'])){
-            $res->where(['status' => [0, '>']]);
-        }
+//        if(!isset($where['status'])){
+//            $res->where(['status' => [0, '>']]);
+//        }
 
         return $res->run($run);
     }

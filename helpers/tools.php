@@ -3,47 +3,6 @@
 // No cache JS or CSS:
 
 include DIR . '/helpers/backup.php';
-/*
-$parser = new Parsers();
-$parser->strToDb(DIR.'/data/russian_surnames.json', 'hs_member_surnames');
-*/
-
-
-//
-function send_sms($text, $phone = null)
-{
-    $Sms = new Sms;
-    if (!is_string($text)) {
-        $text = json_encode($text, 256);
-    }
-    $Sms->smsaero_send([
-        'phone' => $phone,
-        'text' => $text
-    ]);
-}
-
-
-function send_telegram($text, $chat_id = null)
-{
-    try {
-        $Telegram = new Telegram;
-        if (!is_string($text)) {
-            $text = json_encode($text, 256);
-        }
-        if ($chat_id) {
-            $Telegram->send([
-                'chat_id' => $chat_id,
-                'text' => $text
-            ]);
-        } else {
-            $Telegram->send([
-                'text' => $text
-            ]);
-        }
-    } catch (Exception $e) {
-        Response::error($e);
-    }
-}
 
 
 function load_models($name)

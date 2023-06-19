@@ -1,6 +1,7 @@
 <?php
 define('START_TIME', microtime(true));
 define('START_MEMORY', memory_get_peak_usage());
+define("IS_DEV", true);
 
 if (isset($_SERVER['HTTP_ORIGIN'])) {
 
