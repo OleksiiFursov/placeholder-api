@@ -76,34 +76,6 @@ function console($data = null)
     ]);
 }
 
-function response_group(&$items, $ignore = ['date'])
-{
-
-    $keys_one = [];
-    $keys_many = [];
-    foreach ($items[0] as $k => $v) {
-        if (str_contains($k, '_')) {
-            $buf = explode('_', $k);
-            if (!isset($keys_one[$buf[0]])) {
-                $keys_one[$buf[0]] = $k;
-            } else {
-                if (!isset($keys_many[$buf[0]])) {
-                    $keys_many[$buf[0]] = [$keys_one[$buf[0]], $k];
-                } else {
-                    $keys_many[$buf[0]][] = $k;
-                }
-
-            }
-        }
-    }
-    unset($keys_one);
-    foreach ($items as &$item) {
-        foreach ($keys_many as $name => $keys) {
-            $item[$name] = remove_items($item, $keys);
-        }
-    }
-    unset($item);
-}
 
 function show()
 {
@@ -312,13 +284,6 @@ function remove_items(&$arr, $keys, $options = [])
     return $res;
 }
 
-function remove_item_copy($arr, $key)
-{
-    if (isset($arr[$key])) {
-        unset($arr[$key]);
-    }
-    return $arr;
-}
 
 function remove_item(&$arr, $key, $def = '')
 {
@@ -339,8 +304,7 @@ function def($a, $b)
 
 
 if (!function_exists('mb_ucfirst')) {
-    function mb_ucfirst($string, $enc = 'UTF-8'): string
-    {
+    function mb_ucfirst($string, $enc = 'UTF-8'){
         return mb_strtoupper(mb_substr($string, 0, 1, $enc), $enc) .
             mb_substr($string, 1, mb_strlen($string, $enc), $enc);
     }
@@ -358,22 +322,8 @@ if (!function_exists('mb_lcfirst')) {
     }
 }
 
-function is_type_array($arr, $reg)
-{
 
-    foreach ($arr as $v) {
-        if (is_array($v)) {
-            return false;
-
-        }
-        if (!preg_match('/^[' . $reg . ']+$/iu', $v)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function isAssoc($arr)
+function is_assoc($arr)
 {
     if (!is_array($arr)) return null;
     if ([] === $arr) return false;
@@ -495,7 +445,6 @@ function parse_id($id)
 }
 
 spl_autoload_register(function ($class_name) {
-    notice($class_name);
     if (str_contains($class_name, 'CI_')) {
 
         $class_name = substr($class_name, 3);
@@ -525,7 +474,7 @@ spl_autoload_register(function ($class_name) {
         } else {
             preg_match('~([A-Z][^A-Z]+)?([A-Z][^A-Z]+)?~', $class_name, $match);
             if ($match[1] === 'Model') {
-                include DIR . '/model/' . $match[2] . '/model/' . $class_name . '.php';
+                include DIR . '/model/' . $match[2] . '/Models/' . $class_name . '.php';
             } else {
                 include DIR . '/model/' . $match[1] . '/' . $class_name . '.php';
             }

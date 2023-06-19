@@ -1,11 +1,5 @@
 <?php
 
-//PHP_INT_MAX
-namespace Database;
-
-use Model;
-use Response;
-
 /**
  * Class DB_build
  * * @method db query($sql)
@@ -42,6 +36,9 @@ class DB_build
     {
         $this->debug = IS_DEV || $db->debugGlobal;
         $this->db = &$db;
+        if(ini('DB_build:init')){
+            ini('DB_build:init')($this);
+        }
         return $this;
     }
 
@@ -691,7 +688,7 @@ class DB_build
         } else {
             if (sizeof($columns) === 0) return $this;
 
-            if (!isAssoc($columns)) {
+            if (!is_assoc($columns)) {
                 if (!is_array($columns[0]) && isset($columns[2]) && in_array(strtoupper($columns[2]), DB_SQL_OPERATORS)) {
                     $columns = [$columns];
                 }
@@ -920,7 +917,7 @@ class DB_build
 
     public function node($name)
     {
-        /** @var $name_alt */
+        /** @var $table_name_alt */
         /** @var $table */
 
 
@@ -929,8 +926,8 @@ class DB_build
         $where = remove_item($data, 'where');
         $join = remove_item($data, 'join', 'left');
         $groupBy = remove_item($data, 'groupBy',);
-        if (property_exists($data[0], 'name_alt')) {
-            $pref = $data[0]::$name_alt;
+        if (property_exists($data[0], 'table_name_alt')) {
+            $pref = $data[0]::$table_name_alt;
         } else {
             $pref = explode(' ', $data[0]::$table)[0];
         }
@@ -947,7 +944,7 @@ class DB_build
             }
             $pref .= $this->nodes_use[$data[0]::$table];
         } else {
-            $sufTable = $data[0]::$name_alt ? ' as ' . $data[0]::$name_alt : '';
+            $sufTable = $data[0]::$table_name_alt ? ' as ' . $data[0]::$table_name_alt : '';
             $joinParams = $data[1];
             $this->nodes_use[$data[0]::$table] = 1;
         }
@@ -1031,7 +1028,7 @@ class DB_build
                 for ($j = 0, $lenj = sizeof($whi['columns']); $j < $lenj; $j++) {
                     $col = $whi['columns'][$j];
                     if (is_object($col) && $col->_type === 'where_group') {
-                        if (isAssoc($col->data[0]['columns'])) {
+                        if (is_assoc($col->data[0]['columns'])) {
                             $col->data[0]['columns'] = $this->AssocToRow($col->data[0]['columns']);
                         }
                         $buf[] = $this->where_export($col->data);
@@ -1322,7 +1319,7 @@ class DB_build
 
     function model($name)
     {
-        $this->from($name::$table . ((isset($name::$name_alt) && $name::$table !== $name::$name_alt) ? ' as ' . $name::$name_alt : ''));
+        $this->from($name::$table . ((isset($name::$table_name_alt) && $name::$table !== $name::$table_name_alt) ? ' as ' . $name::$table_name_alt : ''));
         $this->model = $name;
         if ($this->type === 'select')
             $this->setNodes($name);

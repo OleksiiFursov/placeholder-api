@@ -1,10 +1,38 @@
 <?php
+/**
+ * @var $db db
+ */
 $routers = include DIR . '/config/router.php';
 ini('system.mode', 'api');
 ini('document.type', 'json');
 define('URL_QUERY', $_SERVER['REQUEST_URI']);
 
 $short_return = explode(':', substr(URL_QUERY, 1));
+$url_param = explode('?', $short_return[0]);
+
+
+if (isset($short_return[1])) {
+    $_REQUEST['return'] = $short_return[1];
+    $_REQUEST['limit'] = 1;
+}
+$router = $url_args = explode('/', $url_param[0]);
+
+$token = array_shift($router);
+
+if(preg_match('#^[0-9a-f]+$#', $token)){
+    ini('DB_build:init', function(&$context) use($token){
+        $context->where(['token' => $token],);
+    });
+
+    $q = ModelUsers::findOne();
+    if(!$q){
+        Response::end('Не верный токен в URL', 403);
+    }
+    ini('sys_user', $q);
+}else{
+    Response::end('Не передан в токен в URL', 403);
+}
+
 
 foreach ($routers as $r_url => $r_values) {
     if (preg_match('#' . $r_url . '#', $short_return[0], $matches)) {
@@ -18,14 +46,7 @@ foreach ($routers as $r_url => $r_values) {
 }
 
 
-$url_param = explode('?', $short_return[0]);
 
-
-if (isset($short_return[1])) {
-    $_REQUEST['return'] = $short_return[1];
-    $_REQUEST['limit'] = 1;
-}
-$router = $url_args = explode('/', $url_param[0]);
 $router_path = $router;
 
 if (end($router_path) === '') {
@@ -76,7 +97,7 @@ if (!isset($class_name)) {
 
 $class_name_lc = lcfirst($class_name);
 $obj = 'CI_' . $class_name_lc;
-/** @noinspection PhpUndefinedVariableInspection */
+
 ini('router.method_name', $method_name);
 $obj = new $obj;
 
@@ -137,12 +158,6 @@ event('onLoad.before');
 $router = empty($router) ? [null] : array_map(fn($item) => urldecode($item), $router);
 
 // ACCESS:
-
-
-if (isset($access_path) && !$obj->is_public) {
-    Access::strict_check($access_path);
-}
-
 if (isset($router[0]) && is_numeric($router[0])) {
     $router[0] = parse_id($router[0]);
 }

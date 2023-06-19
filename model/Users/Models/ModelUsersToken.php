@@ -4,7 +4,7 @@
 class ModelUsersToken extends BaseModel
 {
     static $table = 'users_token';
-    static $name_alt ='ut';
+    static $table_name_alt ='ut';
     static $meta = false;
     static $columns = [
         'token'             => ['string'],

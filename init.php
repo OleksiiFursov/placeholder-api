@@ -42,7 +42,7 @@ require DIR.'/helpers/array.php';
 require DIR.'/helpers/event.php';
 
 
-
+require DIR.'/library/Database/db.php';
 $db =  new db();
 require DIR.'/helpers/debug.php';
 require DIR .'/helpers/tools.php';
