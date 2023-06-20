@@ -19,17 +19,17 @@ $router = $url_args = explode('/', $url_param[0]);
 
 $token = array_shift($router);
 
-if(preg_match('#^[0-9a-f]+$#', $token)){
-    ini('DB_build:init', function(&$context) use($token){
-        $context->where(['token' => $token],);
+if (preg_match('#^[0-9a-f]+$#', $token)) {
+    ini('DB_build:init', function (&$context) use ($token) {
+        $context->where(['token' => $token]);
     });
 
     $q = ModelUsers::findOne();
-    if(!$q){
+    if (!$q) {
         Response::end('Не верный токен в URL', 403);
     }
     ini('sys_user', $q);
-}else{
+} else {
     Response::end('Не передан в токен в URL', 403);
 }
 
@@ -44,7 +44,6 @@ foreach ($routers as $r_url => $r_values) {
 
     }
 }
-
 
 
 $router_path = $router;
