@@ -36,7 +36,7 @@ class DB_build
     {
         $this->debug = IS_DEV || $db->debugGlobal;
         $this->db = &$db;
-        if(ini('DB_build:init')){
+        if (ini('DB_build:init')) {
             ini('DB_build:init')($this);
         }
         return $this;
@@ -69,7 +69,7 @@ class DB_build
 
         if ($this->debug) {
             $this->time_start = microtime(TRUE);
-            $this->memory_start = memory_get_peak_usage(false);
+            $this->memory_start = memory_get_peak_usage();
         }
         if ($this->model && ($this->type === 'insert' || $this->type === 'update')) {
             /** @var $columns */
@@ -697,6 +697,13 @@ class DB_build
                     $columns = [['id', $columns, 'IN']];
                 } elseif (array_every($columns, 'is_string')) {
                     $columns = [['name', $columns, 'IN']];
+                } else {
+                    $res = [];
+
+                    foreach ($columns as $v) {
+                        $res[] = $this->AssocToRow($v)[0];
+                    }
+                    $columns = $res;
                 }
             } else {
                 $columns = $this->AssocToRow($columns);
@@ -730,7 +737,6 @@ class DB_build
     {
         if (empty($columns)) return $this;
 
-
         return $this->filter_operation($columns, $operand, $operandGroup, $group, __FUNCTION__);
     }
 
@@ -744,15 +750,21 @@ class DB_build
 
         $newColumns = [];
         foreach ($columns as $name => $value) {
-            if (is_array($value) && sizeof($value) === 2 && in_array($value[1], DB_SQL_OPERATORS, true)) {
+
+            $value_is_array = is_array($value);
+
+            $value_length = $value_is_array ? sizeof($value) : null;
+
+            if ($value_is_array && $value_length === 2 && in_array($value[1], DB_SQL_OPERATORS, true)) {
                 $newColumns[] = [$name, $value[1] === 'LIKE' ? '%' . $value[0] . '%' : $value[0], $value[1]];
-            } elseif (is_array($value) && sizeof($value) === 1 && ($_k = array_key_first($value)) && in_array(strtoupper($_k), DB_SQL_OPERATORS)) {
+            } elseif ($value_is_array && $value_length === 1 && ($_k = array_key_first($value)) && in_array(strtoupper($_k), DB_SQL_OPERATORS)) {
                 if ($_k === 'like') {
                     $value[$_k] = '%' . $value[$_k] . '%';
                 }
                 $newColumns[] = [$name, $value[$_k], strtoupper($_k)];
             } else {
-                $newColumns[] = [$name, $value, is_array($value) ? 'IN' : '='];
+                $operator = $value === null ? 'IS NULL' : ($value_is_array ? 'IN' : '=');
+                $newColumns[] = [$name, $value, $operator];
             }
 
         }
@@ -869,7 +881,7 @@ class DB_build
                     $value = '%' . $value . '%';
                 }
                 $value = "'" . $this->db->escape_string($value) . "'";
-            } else {
+            } else if(is_numeric($value)){
                 $value = (double)$value;
             }
         }
