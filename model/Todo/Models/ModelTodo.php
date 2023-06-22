@@ -8,8 +8,6 @@ class ModelTodo extends BaseModel
         'description' => ['string'],
         'priority' => ['int'],
         'status'    => ['int'],
-        'created_at' => ['datetime'],
-        'updated_at' => ['datetime']
     ];
 
 }
