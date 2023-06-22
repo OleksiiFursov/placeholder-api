@@ -1130,7 +1130,7 @@ class DB_build
 
     private function _isReg($str)
     {
-        return $str[0] === '#' && $str[strlen($str) - 1] === '#';
+        return is_string($str) && $str[0] === '#' && $str[strlen($str) - 1] === '#';
     }
 
     private function _prefix($arr, $prefix)
@@ -1158,10 +1158,13 @@ class DB_build
             for ($i = 0, $len = sizeof($var); $i < $len; $i++) {
 
                 if (!preg_match($query, $var[$i])) continue;
-                array_splice($var, $i, $i + 1);
+                array_splice($var, $i, 1);
             }
 
-        } else {
+        } elseif(is_numeric($query)) {
+
+            array_splice($var, $query, 1);
+        }else{
             $var = array_filter($var, function ($item) use ($query) {
                 if (is_array($query))
                     return !in_array($item, $query);

@@ -4,9 +4,6 @@ class CI_Vocabulary extends Controller{
 
     }
     function get(){
-        return ModelVocabulary::find(GET());
-    }
-    function update(){
-        //if(ModelVocabulary::has())
+        return ModelVocabulary::query()->unWhere(1)->where(GET())->run(4);
     }
 }

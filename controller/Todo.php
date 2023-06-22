@@ -9,4 +9,9 @@ class CI_Todo extends Controller{
     function demo(){
 
     }
+    function add(){
+        $data = GET();
+
+       // ModelTodo::insert($data)
+    }
 }
