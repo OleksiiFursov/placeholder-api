@@ -1,5 +1,4 @@
-<?php /** @noinspection ALL */
-
+<?php
 
 class BaseModel
 {
@@ -115,7 +114,8 @@ class BaseModel
 
     static function query($type=null){
         global $db;
-        $res =  $db->build()->model(static::class);
+        $res = $db->build()->model(static::class);
+
         if(!$type){
             $res->type = $type;
         }
@@ -183,11 +183,11 @@ class BaseModel
         return $db->build()->update(['status' => $status])->model(static::class)->where($where)->run();
     }
 
-    static function params($params, $filtesr=null, $run=1){
+    static function params($params, $filters=null, $run=1){
         global $db;
         $res = $db->build()->params($params)->model(static::class);
         if($filters){
-          $res->filter($filters);
+          $res->where($filters);
         }
         if($run !== null)
         return $res->run($run);

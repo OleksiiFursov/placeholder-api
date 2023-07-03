@@ -9,9 +9,13 @@ class CI_Todo extends Controller{
     function demo(){
 
     }
+    function get(){
+        $filter = GET('filter') ?? [];
+        return ModelTodo::find($filter);
+    }
     function add(){
         $data = GET();
-
+        return 1;
        // ModelTodo::insert($data)
     }
 }
