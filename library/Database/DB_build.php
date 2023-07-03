@@ -356,6 +356,9 @@ class DB_build
 
 
                 break;
+            default:
+                notice('No selected type query');
+                break;
         }
 
         if ($this->debug) {

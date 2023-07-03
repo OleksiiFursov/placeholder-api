@@ -53,11 +53,11 @@ if (end($router_path) === '') {
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' && !isset($short_return[1])) {
+if (!isset($short_return[1])) {
     $_method = [
         'GET' => 'get',
         'PATCH' => 'update',
-        'PUT' => 'add',
+        'POST' => 'add',
         'DELETE' => 'delete',
         'VIEW' => 'get'
     ];
@@ -115,17 +115,25 @@ if (isset($method_args[0]) && isset($method_args[1])) {
 }
 
 if (!method_exists($obj, $method_name)) {
-
-
-    if (method_exists($obj, 'def')) {
-        $router = array_slice($url_args, 1);
-        $method_name = 'def';
-    } else {
-        include DIR . '/controller/Base.php';
-        $obj = new CI_Base;
-        $router = [$method_name];
-        $method_name = 'NOT_FOUND';
-    }
+    $skip = false;
+   if(sizeof($router) > 1 && end($router) === 'Add'){
+       array_pop($router);
+       $method_name = strtolower(array_pop($router));
+       if(method_exists($obj, $method_name)){
+           $skip = true;
+       }
+   }
+   if(!$skip) {
+       if (method_exists($obj, 'def')) {
+           $router = array_slice($url_args, 1);
+           $method_name = 'def';
+       } else {
+           include DIR . '/controller/Base.php';
+           $obj = new CI_Base;
+           $router = [$method_name];
+           $method_name = 'NOT_FOUND';
+       }
+   }
     ini('router.method_name', $method_name);
     $access_path = null;
 } else {
