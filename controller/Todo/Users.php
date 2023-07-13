@@ -1,6 +1,6 @@
 <?php
 
-class CI_Todo extends Controller{
+class CI_TodoUsers extends Controller{
     public function __construct()
     {
 
@@ -17,6 +17,6 @@ class CI_Todo extends Controller{
     function add(){
         $data = GET();
         return 1;
-       // ModelTodo::insert($data)
+        // ModelTodo::insert($data)
     }
 }
