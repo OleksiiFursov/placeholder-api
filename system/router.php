@@ -63,16 +63,24 @@ if(sizeof($router_path) === 1){
     $method_name = '';
 }else{
     while ($router_path) {
-        $method_args[] = array_pop($router_path);
-
-        if (file_exists(DIR . '/controller/' . implode('/', $router_path) . '.php')) {
+        $itemDir = array_pop($router_path);
+        if(is_numeric($itemDir)){
+            $method_args[] = $itemDir;
+            continue;
+        }
+        if (file_exists(DIR . '/controller/' . implode('/', $router_path).'/'.$itemDir . '.php')) {
+            $class_name = implode('/', $router_path).ucfirst($itemDir);
+            $method_name = '';
+            $router_path = implode('/', $router_path).ucfirst($itemDir);
+            break;
+        }else if  (file_exists(DIR . '/controller/' . implode('/', $router_path) . '.php')) {
+            $method_args[] = $itemDir;
             $method_name = $method_name ?? strtolower(array_pop($method_args));
             $class_name = implode('', $router_path);
             $router_path = implode('/', $router_path);
             $router = array_reverse($method_args);
             break;
         }
-
     }
 }
 

@@ -7,10 +7,11 @@ class CI_TodoUsers extends Controller{
     }
 
     function demo(){
-        return 'demo';
+        return 'demo1';
     }
-    function _get(){
-        return 'get';
+    function _get($args){
+        notice($args);
+        return 'get1';
         $filter = GET('filter') ?? [];
         return ModelTodo::find($filter);
     }

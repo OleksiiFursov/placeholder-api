@@ -9,7 +9,8 @@ class CI_Todo extends Controller{
     function demo(){
         return 'demo';
     }
-    function _get(){
+    function _get($args){
+        notice($args);
         return 'get';
         $filter = GET('filter') ?? [];
         return ModelTodo::find($filter);
