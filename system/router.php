@@ -53,38 +53,27 @@ if (end($router_path) === '') {
 }
 
 
-if (!isset($short_return[1])) {
-    $_method = [
-        'GET' => 'get',
-        'PATCH' => 'update',
-        'POST' => 'add',
-        'DELETE' => 'delete',
-        'VIEW' => 'get'
-    ];
-
-    $method_name = $_method[$_SERVER['REQUEST_METHOD']];
-    $router_path[] = $method_name;
-    unset($_method);
-}
-
-
 $router_path = array_map(fn($v) => ucfirst($v), $router_path);
 
 $method_args = [];
 
-while ($router_path) {
-    $method_args[] = array_pop($router_path);
+if(sizeof($router_path) === 1){
+    $class_name = array_pop($router_path);
+    $router_path = '';
+    $method_name = '';
+}else{
+    while ($router_path) {
+        $method_args[] = array_pop($router_path);
 
+        if (file_exists(DIR . '/controller/' . implode('/', $router_path) . '.php')) {
+            $method_name = $method_name ?? strtolower(array_pop($method_args));
+            $class_name = implode('', $router_path);
+            $router_path = implode('/', $router_path);
+            $router = array_reverse($method_args);
+            break;
+        }
 
-    if (file_exists(DIR . '/controller/' . implode('/', $router_path) . '.php')) {
-        $access_path = strtolower(implode('.', $router_path));
-        $method_name = $method_name ?? strtolower(array_pop($method_args));
-        $class_name = implode('', $router_path);
-        $router_path = implode('/', $router_path);
-        $router = array_reverse($method_args);
-        break;
     }
-
 }
 
 
@@ -92,13 +81,33 @@ if (!isset($class_name)) {
     $class_name = get_option('router.class_404');
     $router_path = $class_name;
     $method_name = 'not_exists_class';
+
 }
 
 $class_name_lc = lcfirst($class_name);
 $obj = 'CI_' . $class_name_lc;
 
-ini('router.method_name', $method_name);
+
 $obj = new $obj;
+
+if (!isset($short_return[1]) && !$method_name && !method_exists($obj, $method_name)) {
+
+    $_method = [
+        'GET' => '_get',
+        'PATCH' => '_patch',
+        'POST' => '_post',
+        'DELETE' => '_delete',
+        'VIEW' => '_get'
+    ];
+    $method_name_magic = $_method[$_SERVER['REQUEST_METHOD']];
+    if(method_exists($obj, $method_name_magic)){
+        $method_name = $method_name_magic;
+        $router_path .= $method_name;
+    }
+
+    unset($_method);
+}
+
 
 
 event('router.after', [
@@ -114,36 +123,23 @@ if (isset($method_args[0]) && isset($method_args[1])) {
     }
 }
 
-if (!method_exists($obj, $method_name)) {
-    $skip = false;
-   if(sizeof($router) > 1 && end($router) === 'Add'){
-       array_pop($router);
-       $method_name = strtolower(array_pop($router));
-       if(method_exists($obj, $method_name)){
-           $skip = true;
-       }
-   }
-   if(!$skip) {
-       if (method_exists($obj, 'def')) {
-           $router = array_slice($url_args, 1);
-           $method_name = 'def';
-       } else {
-           include DIR . '/controller/Base.php';
-           $obj = new CI_Base;
-           $router = [$method_name];
-           $method_name = 'NOT_FOUND';
-       }
-   }
-    ini('router.method_name', $method_name);
-    $access_path = null;
-} else {
+if (!$method_name || !method_exists($obj, $method_name)) {
 
-    if ($class_name !== get_option('router.class_404'))
-        $access_path .= '.' . $method_name;
+    if (method_exists($obj, 'def')) {
+        $router = array_slice($url_args, 1);
+        $method_name = 'def';
+    } else {
+        include DIR . '/controller/Base.php';
+        $obj = new CI_Base;
+        $router = [$method_name];
+        $method_name = 'NOT_FOUND';
+    }
+
+    ini('router.method_name', $method_name);
 }
 
-
-if ($method_name === get_option('router.method_404')) {
+ini('router.method_name', $method_name);
+if ($method_name && $method_name === get_option('router.method_404')) {
     $router = $method_args;
 }
 
