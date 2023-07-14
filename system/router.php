@@ -65,7 +65,7 @@ if(sizeof($router_path) === 1){
     while ($router_path) {
         $itemDir = array_pop($router_path);
         if(is_numeric($itemDir)){
-            $method_args[] = $itemDir;
+            $router[] = $itemDir;
             continue;
         }
         if (file_exists(DIR . '/controller/' . implode('/', $router_path).'/'.$itemDir . '.php')) {
