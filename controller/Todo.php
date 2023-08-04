@@ -10,10 +10,12 @@ class CI_Todo extends Controller{
         return 'demo';
     }
     function _get($args){
-        notice($args);
-        return 'get';
+        return 'todo->get->'.$args;
         $filter = GET('filter') ?? [];
         return ModelTodo::find($filter);
+    }
+    function _post($id){
+        return 'todo->post->'.$id;
     }
     function add(){
         $data = GET();

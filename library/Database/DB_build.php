@@ -36,9 +36,7 @@ class DB_build
     {
         $this->debug = IS_DEV || $db->debugGlobal;
         $this->db = &$db;
-        if (ini('DB_build:init')) {
-            ini('DB_build:init')($this);
-        }
+        event('DB_build.init', ['context' => &$this]);
         return $this;
     }
 

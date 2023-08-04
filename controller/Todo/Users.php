@@ -9,9 +9,12 @@ class CI_TodoUsers extends Controller{
     function demo(){
         return 'demo1';
     }
+    function _post($args){
+        return 'todo->post->users->'.$args;
+    }
     function _get($args){
-        notice($args);
-        return 'get1';
+
+        return 'todo->get->users->'.$args;
         $filter = GET('filter') ?? [];
         return ModelTodo::find($filter);
     }

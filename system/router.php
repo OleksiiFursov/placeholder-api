@@ -2,7 +2,7 @@
 /**
  * @var $db db
  */
-$routers = include DIR . '/config/router.php';
+
 ini('system.mode', 'api');
 ini('document.type', 'json');
 define('URL_QUERY', $_SERVER['REQUEST_URI']);
@@ -10,30 +10,18 @@ define('URL_QUERY', $_SERVER['REQUEST_URI']);
 $short_return = explode(':', substr(URL_QUERY, 1));
 $url_param = explode('?', $short_return[0]);
 
-
 if (isset($short_return[1])) {
     $_REQUEST['return'] = $short_return[1];
-    $_REQUEST['limit'] = 1;
 }
 $router = $url_args = explode('/', $url_param[0]);
-
-$token = array_shift($router);
-
-if (preg_match('#^[0-9a-f]+$#', $token)) {
-    ini('DB_build:init', function (&$context) use ($token) {
-        $context->where(['token' => $token]);
-    });
-
-    $q = ModelUsers::findOne();
-    if (!$q) {
-        Response::end('Не верный токен в URL', 403);
-    }
-    ini('sys_user', $q);
-} else {
-    Response::end('Не передан в токен в URL', 403);
+if (end($router) === '') {
+    array_pop($router);
 }
 
+event('router.before', ['router' => &$router]);
 
+
+$routers = include DIR . '/config/router.php';
 foreach ($routers as $r_url => $r_values) {
     if (preg_match('#' . $r_url . '#', $short_return[0], $matches)) {
         $short_return[0] = array_shift($r_values);
@@ -45,17 +33,18 @@ foreach ($routers as $r_url => $r_values) {
     }
 }
 
-
 $router_path = $router;
 
-if (end($router_path) === '') {
-    array_pop($router_path);
-}
 
+
+$method_args = [];
+if(is_numeric(end($router_path))){
+    $method_args[] = array_pop($router_path);
+}
 
 $router_path = array_map(fn($v) => ucfirst($v), $router_path);
 
-$method_args = [];
+
 
 if(sizeof($router_path) === 1){
     $class_name = array_pop($router_path);
