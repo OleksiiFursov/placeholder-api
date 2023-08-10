@@ -37,9 +37,9 @@ $router_path = $router;
 
 
 
-$method_args = [];
+$method_args = null;
 if(is_numeric(end($router_path))){
-    $method_args[] = array_pop($router_path);
+    $method_args = array_pop($router_path);
 }
 
 $router_path = array_map(fn($v) => ucfirst($v), $router_path);
@@ -55,20 +55,24 @@ if(empty($router_path)){
     while($router_path){
         if (file_exists($DIR_CONTROLLER . implode('/', $router_path).'.php')) {
             $fileCtrl = array_pop($router_path);
-            $class_name = implode('', $router_path);
+            $class_name = implode('', $router_path).$fileCtrl;
             $method_name = $temp_method;
             break;
         }
         $temp_method= array_pop($router_path);
     }
 }
-$class_name_lc = lcfirst($class_name);
-$obj = 'CI_' . $class_name_lc;
+$obj = 'CI_' . $class_name;
 
+if (!class_exists($obj)) {
+    $class_name = get_option('router.class_404');
+    $method_args = $class_name;
+    $method_name = 'not_exists_class';
 
+}
 $obj = new $obj;
-if (!$method_name && !method_exists($obj, $method_name)) {
 
+if (!$method_name || !method_exists($obj, $method_name)) {
     $_method = [
         'GET' => '_get',
         'PATCH' => '_patch',
@@ -79,54 +83,9 @@ if (!$method_name && !method_exists($obj, $method_name)) {
     $method_name_magic = $_method[$_SERVER['REQUEST_METHOD']];
     if(method_exists($obj, $method_name_magic)){
         $method_name = $method_name_magic;
-        $router_path .= $method_name;
     }
-
     unset($_method);
 }
-
-json([$class_name, $method_name]);
-
-
-
-if(sizeof($router_path) === 1){
-    $class_name = array_pop($router_path);
-    $router_path = '';
-    $method_name = '';
-}else{
-    while ($router_path) {
-        $itemDir = array_pop($router_path);
-        if(is_numeric($itemDir)){
-            $router[] = $itemDir;
-            continue;
-        }
-        if (file_exists(DIR . '/controller/' . implode('/', $router_path).'/'.$itemDir . '.php')) {
-            $class_name = implode('/', $router_path).ucfirst($itemDir);
-            $method_name = '';
-            $router_path = implode('/', $router_path).ucfirst($itemDir);
-            break;
-        }else if  (file_exists(DIR . '/controller/' . implode('/', $router_path) . '.php')) {
-            $method_args[] = $itemDir;
-            $method_name = $method_name ?? strtolower(array_pop($method_args));
-            $class_name = implode('', $router_path);
-            $router_path = implode('/', $router_path);
-            $router = array_reverse($method_args);
-            break;
-        }
-    }
-}
-
-
-if (!isset($class_name)) {
-    $class_name = get_option('router.class_404');
-    $router_path = $class_name;
-    $method_name = 'not_exists_class';
-
-}
-
-
-
-
 
 
 
@@ -135,13 +94,6 @@ event('router.after', [
     'method' => &$method_name,
     'param' => &$url_param
 ]);
-if (isset($method_args[0]) && isset($method_args[1])) {
-    $_met = lcfirst($method_args[0]) . $method_args[1];
-    if (method_exists($obj, $_met)) {
-        array_splice($method_args, 0, 2);
-        $method_name = $_met;
-    }
-}
 
 if (!$method_name || !method_exists($obj, $method_name)) {
 
@@ -176,14 +128,8 @@ if (isset($url_param[1])) {
 
 
 ini('router.args', $router);
-event('onLoad.before');
 
 $router = empty($router) ? [null] : array_map(fn($item) => urldecode($item), $router);
-
-// ACCESS:
-if (isset($router[0]) && is_numeric($router[0])) {
-    $router[0] = parse_id($router[0]);
-}
 
 
 $res = call_user_func([$obj, $method_name], ...$router);
