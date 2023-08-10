@@ -12,7 +12,7 @@ require 'boot.php';
 add_event('router.before', function($args){
 
     $token = array_shift($args['router']);
-    if (preg_match('#^[0-9a-f]+$#', $token)) {
+    if ($token && preg_match('#^[0-9a-f]+$#', $token)) {
         add_event('DB_build.init', function ($args) use ($token) {
             $args['context']->where(['token' => $token]);
         });

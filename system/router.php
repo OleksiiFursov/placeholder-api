@@ -46,6 +46,49 @@ $router_path = array_map(fn($v) => ucfirst($v), $router_path);
 
 
 
+if(empty($router_path)){
+    $class_name = 'Base';
+    $method_name = 'root';
+}else{
+    $DIR_CONTROLLER = DIR . '/controller/';
+    $temp_method = null;
+    while($router_path){
+        if (file_exists($DIR_CONTROLLER . implode('/', $router_path).'.php')) {
+            $fileCtrl = array_pop($router_path);
+            $class_name = implode('', $router_path);
+            $method_name = $temp_method;
+            break;
+        }
+        $temp_method= array_pop($router_path);
+    }
+}
+$class_name_lc = lcfirst($class_name);
+$obj = 'CI_' . $class_name_lc;
+
+
+$obj = new $obj;
+if (!$method_name && !method_exists($obj, $method_name)) {
+
+    $_method = [
+        'GET' => '_get',
+        'PATCH' => '_patch',
+        'POST' => '_post',
+        'DELETE' => '_delete',
+        'VIEW' => '_get'
+    ];
+    $method_name_magic = $_method[$_SERVER['REQUEST_METHOD']];
+    if(method_exists($obj, $method_name_magic)){
+        $method_name = $method_name_magic;
+        $router_path .= $method_name;
+    }
+
+    unset($_method);
+}
+
+json([$class_name, $method_name]);
+
+
+
 if(sizeof($router_path) === 1){
     $class_name = array_pop($router_path);
     $router_path = '';
@@ -81,29 +124,9 @@ if (!isset($class_name)) {
 
 }
 
-$class_name_lc = lcfirst($class_name);
-$obj = 'CI_' . $class_name_lc;
 
 
-$obj = new $obj;
 
-if (!isset($short_return[1]) && !$method_name && !method_exists($obj, $method_name)) {
-
-    $_method = [
-        'GET' => '_get',
-        'PATCH' => '_patch',
-        'POST' => '_post',
-        'DELETE' => '_delete',
-        'VIEW' => '_get'
-    ];
-    $method_name_magic = $_method[$_SERVER['REQUEST_METHOD']];
-    if(method_exists($obj, $method_name_magic)){
-        $method_name = $method_name_magic;
-        $router_path .= $method_name;
-    }
-
-    unset($_method);
-}
 
 
 
