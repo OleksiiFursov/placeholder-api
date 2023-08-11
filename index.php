@@ -12,9 +12,12 @@ require 'boot.php';
 add_event('router.before', function($args){
 
     $token = array_shift($args['router']);
+    ini('user.token', $token);
     if ($token && preg_match('#^[0-9a-f]+$#', $token)) {
-        add_event('DB_build.init', function ($args) use ($token) {
-            $args['context']->where(['token' => $token]);
+        add_event('DB_build.run', function ($args) use ($token) {
+            if($args['context']->type !== 'insert'){
+                $args['context']->where(['token' => $token]);
+            }
         });
 
         $q = ModelUsers::findOne();

@@ -7,7 +7,6 @@ function stop($type, $msg = null, $level = 2)
     header("Content-Type: application/json; charset=utf-8");
 
     if ($msg !== NULL) {
-        Logs::write($type, $msg, $level);
         $msg = $type . ': ' . $msg;
     } else {
         $msg = $type;
@@ -524,6 +523,30 @@ function safe_define(string $name, string $value){
     $res = !defined($name);
     if($res){
         define($name, $value);
+    }
+    return $res;
+}
+
+function take(&$arr, $key, $def=null){
+    if(!isset($arr[$key])) return $def;
+    $a = $arr[$key];
+    unset($arr[$key]);
+    return $a;
+}
+
+function takes(&$arr, $keys, $options=[]){
+    $res = [];
+    $def = $options['def'] ?? null;
+    $takeNull = $options['takeNull'] ?? false;
+    foreach($keys as $key){
+        if(!isset($arr[$key])){
+            if($takeNull){
+                $res[$key] = $def;
+            }
+            continue;
+        }
+        $res[$key] = $arr[$key];
+        unset($arr[$key]);
     }
     return $res;
 }

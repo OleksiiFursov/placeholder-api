@@ -64,7 +64,9 @@ class DB_build
      */
     public function run($type = null, $format = true)
     {
-
+        event('DB_build.run', [
+            'context' => &$this,
+        ]);
         if ($this->debug) {
             $this->time_start = microtime(TRUE);
             $this->memory_start = memory_get_peak_usage();
@@ -79,6 +81,21 @@ class DB_build
 
         $result = false;
 
+        $this->db->stats[$this->type]++;
+        $from = implode(',', $this->from);
+
+        if ($this->offset || $this->limit) {
+            $_limit = 'LIMIT ';
+            if ($this->offset) {
+                $_limit .= $this->offset . ', ';
+            }
+
+            $_limit .= (int)$this->limit ?? 999999999;
+
+        } else {
+            $_limit = '';
+        }
+
         switch ($this->type) {
             case 'select':
 
@@ -89,10 +106,6 @@ class DB_build
                         $type = null;
                     }
                 }
-                $this->event('select.before');
-
-                $this->db->stats['select']++;
-
 
                 if (empty($this->select)) {
                     $select = '*';
@@ -105,7 +118,6 @@ class DB_build
                     $select = implode(', ', $select);
                 }
                 $sub = implode(', ', $this->sub);
-                $from = implode(',', $this->from);
 
                 $groupBy = implode(',', $this->groupBy);
                 $having = $this->where_export($this->having, [
@@ -120,24 +132,11 @@ class DB_build
 
                 $where = $this->where_export();
 
-
                 if (empty($where))
                     $where = 1;
 
                 $order = implode(',', $this->order);
 
-
-                if ($this->offset || $this->limit) {
-                    $_limit = 'LIMIT ';
-                    if ($this->offset) {
-                        $_limit .= $this->offset . ', ';
-                    }
-
-                    $_limit .= (int)$this->limit ?? 999999999;
-
-                } else {
-                    $_limit = '';
-                }
                 $result = "SELECT " . $select .
                     (!empty($sub) ? ", " . $sub : '') .
                     (!empty($from) ? " FROM " . $from : '') . " " .
@@ -161,9 +160,6 @@ class DB_build
                     }
                 }
                 if ($type !== 4) {
-//                    if($this->where_impossible){
-//                        return [];
-//                    }
                     if ($type === 1 || $type === null) {
 
                         $result = $this->db->result($result);
@@ -182,7 +178,6 @@ class DB_build
                                         $Model->format($result[$i], is_array($format) ? $format : NULL);
                                     }
                                 }
-//
                             }
                         }
                     }
@@ -198,14 +193,9 @@ class DB_build
                 $this->event('select.after', [&$this, &$result]);
                 break;
             case 'delete':
-                $this->db->stats['delete']++;
-                $from = implode(',', $this->from);
                 $from = preg_replace('/as [a-zA-Z_0-9]+/', '', $from);
 
                 $where = $this->where_export();
-//                if ($this->where_impossible) {
-//                    return [];
-//                }
 
                 $innerJoin = implode(" ", $this->innerJoin);
                 $order = implode(',', $this->order);
@@ -216,7 +206,7 @@ class DB_build
                     (!empty($innerJoin) ? $innerJoin . " " : '') .
                     "WHERE " . $where . " " .
                     (!empty($this->order) ? "ORDER BY " . $order . " " : '') .
-                    (($this->offset || $this->limit) ? "LIMIT  " . ($this->limit === null ? 999999999 : $this->limit) : '');
+                    (($this->offset || $this->limit) ? $_limit : '');
 
 
                 if ($where == 1 && !$this->safe) {
@@ -232,12 +222,7 @@ class DB_build
 
                 break;
             case 'insert':
-
-                $this->db->stats['insert']++;
-                $from = implode(',', $this->from);
-
                 $from = preg_replace('/as \w+/', '', $from);
-                //$from = str_replace($this->db->prefix, '', $from);
 
                 if (empty($this->insert)) {
                     return false;
@@ -293,10 +278,6 @@ class DB_build
 
                 break;
             case 'update':
-                $this->db->stats['update']++;
-                $from = implode(',', $this->from);
-
-                $from = preg_replace('/as [a-zA-Z_0-9]+/', '', $from);
 
 
                 if (empty($this->update)) {
@@ -341,7 +322,7 @@ class DB_build
                     }
                     $buf[] = '(' . implode(',', $item) . ')';
                 }
-                $result = 'UPDATE  ' . $from . ' (`' . implode('`,`', $columns) . '`) VALUES ' . implode(',', $buf) . " WHERE " . $where;
+                $result = 'UPDATE  ' . $from . ' (`' . implode('`,`', $columns) . '`) VALUES ' . implode(',', $buf) . " WHERE " . $where . ' ' . $_limit;
                 if ($where == 1 && !$this->safe) {
                     return Response::error('Query ' . $result . ' is not safe');
                 }
@@ -882,7 +863,7 @@ class DB_build
                     $value = '%' . $value . '%';
                 }
                 $value = "'" . $this->db->escape_string($value) . "'";
-            } else if(is_numeric($value)){
+            } else if (is_numeric($value)) {
                 $value = (double)$value;
             }
         }
@@ -1162,10 +1143,10 @@ class DB_build
                 array_splice($var, $i, 1);
             }
 
-        } elseif(is_numeric($query)) {
+        } elseif (is_numeric($query)) {
 
             array_splice($var, $query, 1);
-        }else{
+        } else {
             $var = array_filter($var, function ($item) use ($query) {
                 if (is_array($query))
                     return !in_array($item, $query);
@@ -1191,15 +1172,15 @@ class DB_build
 
         $len = sizeof($data);
 
+        $excludes = ['id', 'date_created', 'date_updated', 'date'];
         for ($k = 0; $k < $len; $k++) {
 
             foreach ($columns as $key => $rules) {
-                if (in_array($key, ['id', 'date_created', 'date_updated', 'date'])) continue;
+                if (in_array($key, $excludes)) continue;
 
                 $insKey = &$data[$k][$key];
 
                 // Required:
-
                 if (!isset($insKey)) {
                     if (!$isInsert) continue;
                     if (!isset($rules['require']) || $rules['require'] === TRUE) {
@@ -1284,7 +1265,7 @@ class DB_build
                     if ($rules['is_empty'] === TRUE && empty($insKey)) {
                         Response::error($this->model . ': Field ' . $key . ' - is empty');
                         continue;
-                    }
+                     }
                 }
                 if (isset($rules['min'])) {
                     if (mb_strlen($insKey) < $rules['min']) {
@@ -1299,14 +1280,16 @@ class DB_build
                     }
                 }
                 // Is key:
-                if (isset($rules['key'])) {
-                    $buf = explode('::', $rules['key']);
+                if (isset($rules['sync'])) {
+                    if(is_array($rules['sync'])){
+                        [$model, $key] = $rules['sync'];
+                    }elseif(is_string($rules['sync'])){
+                        $model = $rules['sync'];
+                        $key = 'id';
+                    }
 
-                    /** @noinspection PhpUndefinedFieldInspection */
-                    if (!$db->count($buf[0]::$table, [
-                            $buf[1] ?? 'id' => $insKey
-                    ])) {
-                        Response::error('Error! node - ' . $key . ' - is not exists ' . $buf[0]);
+                    if (!$model::count([$key => $insKey])) {
+                        Response::error('Error! Node "' . $key . '('.$insKey.')" - is not exists ' . $model);
                     }
                 }
             }

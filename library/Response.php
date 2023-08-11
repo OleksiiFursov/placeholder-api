@@ -105,7 +105,6 @@ class Response
             http_response_code($status);
             $res['status'] = $status;
         } else if (!$status) {
-
             http_response_code(500);
         }
 

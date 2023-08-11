@@ -13,7 +13,7 @@ class Errors
 
         Response::end([
             'code' => $number,
-            'message1' => $message,
+            'message' => $message,
             'file' => $file,
             'line' => $line
         ]);

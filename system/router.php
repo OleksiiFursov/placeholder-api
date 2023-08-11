@@ -88,7 +88,6 @@ if (!$method_name || !method_exists($obj, $method_name)) {
 }
 
 
-
 event('router.after', [
     'class' => &$class_name,
     'method' => &$method_name,
@@ -98,12 +97,12 @@ event('router.after', [
 if (!$method_name || !method_exists($obj, $method_name)) {
 
     if (method_exists($obj, 'def')) {
-        $router = array_slice($url_args, 1);
+        $method_args = array_slice($url_args, 1);
         $method_name = 'def';
     } else {
         include DIR . '/controller/Base.php';
         $obj = new CI_Base;
-        $router = [$method_name];
+        $method_args = $method_name;
         $method_name = 'NOT_FOUND';
     }
 
@@ -112,7 +111,7 @@ if (!$method_name || !method_exists($obj, $method_name)) {
 
 ini('router.method_name', $method_name);
 if ($method_name && $method_name === get_option('router.method_404')) {
-    $router = $method_args;
+    $method_args = $router;
 }
 
 
@@ -129,8 +128,5 @@ if (isset($url_param[1])) {
 
 ini('router.args', $router);
 
-$router = empty($router) ? [null] : array_map(fn($item) => urldecode($item), $router);
-
-
-$res = call_user_func([$obj, $method_name], ...$router);
+$res = call_user_func([$obj, $method_name], $method_args);
 json(Response::out($res));

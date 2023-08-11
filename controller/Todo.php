@@ -5,21 +5,21 @@ class CI_Todo extends Controller{
     {
 
     }
-
-    function demo(){
-        return 'demo';
-    }
-    function _get($args){
-        return 'todo->get->'.$args;
-        $filter = GET('filter') ?? [];
+    function _get($id){
+        $filter = GET('filter') ?? $id;
         return ModelTodo::find($filter);
     }
-    function _post($id){
-        return 'todo->post->'.$id;
+    function _post(){
+        $params = GET();
+        return ModelTodo::insert($params);
+    }
+    function _patch($id){
+        $params = GET();
+        json($GLOBALS);
+        $filters = take($params, 'filters', $id);
+        return ModelTodo::update($params, $filters);
     }
     function add(){
-        $data = GET();
-        return 1;
-       // ModelTodo::insert($data)
+        return $this->_post();
     }
 }

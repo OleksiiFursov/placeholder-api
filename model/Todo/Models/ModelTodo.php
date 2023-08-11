@@ -5,9 +5,13 @@ class ModelTodo extends BaseModel
     static $columns = [
         'token' => ['string'],
         'name' => ['string'],
+        'date' => ['datetime'],
         'description' => ['string'],
-        'priority' => ['int'],
-        'status'    => ['int'],
+        'priority' => ['int', 'default'=>1, 'sync'=>['ModelVocabulary', 'name']],
+        'status'    => ['int', 'default'=>0, 'sync' => ['ModelVocabulary', 'name']],
     ];
+    static function onInsert(){
+        self::$columns['token']['default'] = ini('user.token');
+    }
 
 }
