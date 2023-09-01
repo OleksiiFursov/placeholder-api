@@ -115,10 +115,10 @@ class Model
             $new[] = $res[$field] ?? [];
         }
 
-        if (ini('debug.method_info')) {
-            /** @noinspection PhpUnhandledExceptionInspection */
-            throw new ExitException('Exiting normally');
-        }
+//        if (ini('debug.method_info')) {
+//            /** @noinspection PhpUnhandledExceptionInspection */
+//            throw new ExitException('Exiting normally');
+//        }
         return $new;
     }
 

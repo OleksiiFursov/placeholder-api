@@ -61,6 +61,11 @@ if(empty($router_path)){
         }
         $temp_method= array_pop($router_path);
     }
+    if(empty($class_name)){
+        $class_name = get_option('router.class_404');
+        $method_args = $class_name;
+        $method_name = 'not_exists_class';
+    }
 }
 $obj = 'CI_' . $class_name;
 

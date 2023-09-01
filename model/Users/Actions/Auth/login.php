@@ -4,18 +4,19 @@
  * @var array $params
  */
 
-
 [$extends, $params] = $this->init_action([
     'extends' => ['users', 'token'],
     'extends_default' => ['users', 'token'],
     'params' => $params,
     'params_default' => [
         'username' => null,
+        'email' => null,
         'password' => null,
-        'no_error_password' => false,
+        'disabled_error' => false,
         'user_id' => null
     ]
 ]);
+
 
 
 if (isset($params['secret']) && $params['secret'] === 'helpstom') {

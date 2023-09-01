@@ -163,20 +163,15 @@ class DB_build
                     if ($type === 1 || $type === null) {
 
                         $result = $this->db->result($result);
-                        if (is_callable($type)) {
-                            for ($i = 0, $len = sizeof($result); $i < $len; $i++) {
-                                $result[$i] = $type($result[$i]);
-                            }
-                        } else {
-                            if ($format) {
 
-                                if ($this->model)
-                                    formatAll($result, $this->model::$columns);
-                                else {
-                                    $Model = new Model();
-                                    for ($i = 0, $len = sizeof($result); $i < $len; $i++) {
-                                        $Model->format($result[$i], is_array($format) ? $format : NULL);
-                                    }
+                        if ($format) {
+
+                            if ($this->model)
+                                formatAll($result, $this->model::$columns);
+                            else {
+                                $Model = new Model();
+                                for ($i = 0, $len = sizeof($result); $i < $len; $i++) {
+                                    $Model->format($result[$i], is_array($format) ? $format : NULL);
                                 }
                             }
                         }
@@ -1203,6 +1198,9 @@ class DB_build
                         if ($is_valid)
                             settype($insKey, 'integer');
                         break;
+                    case 'password':
+                        $insKey = password_hash($insKey, PASSWORD_DEFAULT);
+                        break;
                     case 'string':
                         $is_valid = is_string($insKey);
                         break;
@@ -1265,7 +1263,7 @@ class DB_build
                     if ($rules['is_empty'] === TRUE && empty($insKey)) {
                         Response::error($this->model . ': Field ' . $key . ' - is empty');
                         continue;
-                     }
+                    }
                 }
                 if (isset($rules['min'])) {
                     if (mb_strlen($insKey) < $rules['min']) {
@@ -1279,17 +1277,17 @@ class DB_build
                         continue;
                     }
                 }
-                // Is key:
+                // Is sync:
                 if (isset($rules['sync'])) {
-                    if(is_array($rules['sync'])){
+                    if (is_array($rules['sync'])) {
                         [$model, $key] = $rules['sync'];
-                    }elseif(is_string($rules['sync'])){
+                    } elseif (is_string($rules['sync'])) {
                         $model = $rules['sync'];
                         $key = 'id';
                     }
 
                     if (!$model::count([$key => $insKey])) {
-                        Response::error('Error! Node "' . $key . '('.$insKey.')" - is not exists ' . $model);
+                        Response::error('Error! Node "' . $key . '(' . $insKey . ')" - is not exists ' . $model);
                     }
                 }
             }

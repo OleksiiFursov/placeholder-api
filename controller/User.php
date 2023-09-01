@@ -17,7 +17,7 @@ class CI_User extends Controller
     }
     function auth()
     {
-        return Response::out($this->model->auth(GET()));
+        return $this->model->auth(GET());
     }
     function logout()
     {

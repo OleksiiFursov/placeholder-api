@@ -169,75 +169,6 @@ function my_array_users_stats($users)
     ];
 }
 
-function my_array_users($users, $type)
-{
-    $_users = [];
-    $sport_man = [];
-    $trainer = [];
-    $staff = [];
-    $manager = [];
-
-    $list_type = [
-        'federation_id',
-        'region_id',
-        'organization_id',
-        'department_id',
-        'group_id',
-    ];
-
-    foreach ($users as $v) {
-        $assign_id = toArray($v['assignment_id'] ?? $v['assignment_ids']);
-        if (in_array(MANAGER_ASSIGMENT_ID, $assign_id)) {
-            if ($type === 'federation_id') {
-                if ($v['region_id'] === 0 && $v['organization_id'] === 0 && $v['department_id'] === 0 && $v['group_id'] === 0) {
-                    $manager[] = $v;
-                }
-            }
-            if ($type === 'region_id') {
-                if ($v['organization_id'] === 0 && $v['department_id'] === 0 && $v['group_id'] === 0) {
-                    $manager[] = $v;
-                }
-            }
-            if ($type === 'organization_id') {
-                if ($v['department_id'] === 0 && $v['group_id'] === 0) {
-                    $manager[] = $v;
-                }
-            }
-            if ($type === 'department_id') {
-                if ($v['group_id'] === 0) {
-                    $manager[] = $v;
-                }
-            }
-        }
-        if (in_array(1, $assign_id)) {
-            $sport_man[] = $v;
-        }
-        if (in_array(2, $assign_id)) {
-            $trainer[] = $v;
-        }
-        if (in_array(3, $assign_id) || in_array(4, $assign_id)) {
-            $staff[] = $v;
-        }
-        $_users[] = $v;
-    }
-
-    $_users = array_group_callback($_users, $type, true);
-    $sport_man = array_group_callback($sport_man, $type, true);
-    $trainer = array_group_callback($trainer, $type, true);
-    $staff = array_group_callback($staff, $type, true);
-
-
-    $manager = array_group_callback($manager, $type, true);
-
-    return [
-        'users' => $_users,
-        'sport_man' => $sport_man,
-        'trainer' => $trainer,
-        'staff' => $staff,
-        'manager' => $manager,
-    ];
-
-}
 
 function my_array_group_callback($arr, $col, $cols)
 {
@@ -578,6 +509,7 @@ function formatAll(&$arr, $types)
     $typeAs = [
         'date' => 'datetime'
     ];
+    $simple_types = ['int', 'string', 'boolean', 'double', 'bool', 'double'];
 
     for ($i = 0, $len = sizeof($arr); $i < $len; $i++) {
 
@@ -585,7 +517,7 @@ function formatAll(&$arr, $types)
             if (!isset($types[$key])) continue;
 
             $type = $types[$key][0];
-            if (in_array($type, ['int', 'string', 'boolean', 'double', 'bool', 'double'])) {
+            if (in_array($type, $simple_types)) {
                 settype($value, $type);
             } else {
                 if (isset($typeAs[$type])) {
