@@ -2,18 +2,35 @@
 
 class Users extends Model
 {
-    protected $model = ModelUsers::class;
+    protected string $model = ModelUsers::class;
 
 
     //Users:
-    function get                ($filters = [], $params = [])               { return include __DIR__ . '/Actions/get.php';}
+    function get($filters = [], $params = [])
+    {
+        return include __DIR__ . '/Actions/get.php';
+    }
 
     //Authorization:
-    function login              ($params)                                   { return include __DIR__ . '/Actions/Auth/login.php';}
-    function auth               ($params = [])                              { return include __DIR__ . '/Actions/Auth/auth.php';}
-    function logout             ($params = [])                              { return include __DIR__ . '/Actions/Auth/logout.php';}
+    function login($params)
+    {
+        return include __DIR__ . '/Actions/Auth/login.php';
+    }
+
+    function auth($params = [])
+    {
+        return include __DIR__ . '/Actions/Auth/auth.php';
+    }
+
+    function logout($params = [])
+    {
+        return include __DIR__ . '/Actions/Auth/logout.php';
+    }
 
 
-    function is_auth(){             return user_id() === 1;}
+    function is_auth(): bool
+    {
+        return user_id() === 1;
+    }
 
 }

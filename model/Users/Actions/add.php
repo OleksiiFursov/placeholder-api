@@ -5,7 +5,8 @@
  * @var array $data
  */
 
-$_data = remove_items($data, ModelUsers::getColumnsForInsert());
+
+$_data = remove_items($data, ModelSysUsers::getColumnsForInsert());
 $_data['owner_id'] = user_id() === 1 ? null : user_id();
 
 $is_user_confirmed = Access::check('users.confirmed');
@@ -31,7 +32,7 @@ if ($is_user_confirmed) {
     $_data['level_id'] = get_option('user.not_confirmed_level', 2);
 }
 
-$id = ModelUsers::insert($_data);
+$id = ModelSysUsers::insert($_data);
 
 if (user_id() === 1) {
     $this->create_token($id);

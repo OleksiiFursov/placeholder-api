@@ -13,13 +13,13 @@ if(!$id){
     return Response::error('Не правильный ид', 422);
 }
 
-if(!ModelUsers::has($id)){
+if(!ModelSysUsers::has($id)){
     return Response::error('Не найден ид в базе', 404);
 }
 
 $tax_data = ['tax_id' => $id, 'tax_type' => 'user'];
 $user_id_data = ['user_id' => $id];
-ModelUsers::disabled($id);
+ModelSysUsers::disabled($id);
 ModelAddress::disabled($tax_data);
 ModelEmails::disabled($tax_data);
 ModelPhones::disabled($tax_data);

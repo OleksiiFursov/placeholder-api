@@ -2,8 +2,8 @@
 
 class ModelUsers extends BaseModel
 {
-    static $table = 'sys_users';
-    static $table_name_alt = 'su';
+    static $table = 'users';
+    static $table_name_alt = 'u';
     static $columns = [
         'tu' => ['string'],
         'name' => ['string'],
@@ -13,6 +13,6 @@ class ModelUsers extends BaseModel
     ];
 
     static function onInsert(){
-        self::$columns['token']['default'] = ini('user.token');
+        self::$columns['tu']['default'] = ini('user.token');
     }
 }

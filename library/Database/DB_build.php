@@ -1156,8 +1156,6 @@ class DB_build
 
     function valid($columns = null, $filter = true)
     {
-        global $db;
-
         $isInsert = $this->type === 'insert';
         if (!$this->isEmpty && $isInsert && empty($this->insert)) {
             $this->insert = [[]];

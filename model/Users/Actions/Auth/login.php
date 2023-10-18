@@ -9,7 +9,7 @@
     'extends_default' => ['users', 'token'],
     'params' => $params,
     'params_default' => [
-        'username' => null,
+        'login' => null,
         'email' => null,
         'password' => null,
         'disabled_error' => false,
@@ -18,66 +18,39 @@
 ]);
 
 
-
-if (isset($params['secret']) && $params['secret'] === 'helpstom') {
-    $data = [];
-    $where = $params['user_id'];
-    $user_id = $params['user_id'];
-    $data['id'] = $params['user_id'];
-} else {
-
-    $where = [];
-    $methodHandler = $params['no_error_password'] ? 'warn' : 'error';
-    $username = trim(remove_item($params, 'username', ''));
-    $password = trim(remove_item($params, 'password', ''));
+$disabled_error = remove_item($params, 'disabled_error');
+$login = remove_item($params, 'login', '');
+$password = remove_item($params, 'password', '');
 
 
-    if (!$username || !$password) {
-        return Response::error('Нет логина или пароля:(', 401);
-    }
-    // LOGIN IS PHONE:
-    if (is_phone($username)) {
-        $phone = $this->phonecheck([
-            'value' => $username
-        ], ['extends' => 'tax_id']);
+$methodHandler = $disabled_error ? 'warn' : 'error';
 
-        if (!$phone) notice('Не найден номер телефона');
-
-        if (isset($phone['tax_id'])) {
-            $where['id'] = $phone['tax_id'];
-        }
-    } else {
-        $where['name'] = $username;
-    }
-
-    $data = ModelUsers::findOne($where, ['password', 'id', 'status']);
-
-
-    if (!$data) {
-        return Response::error('Неправильный логин:(', 401);
-    }
-
-    if (!$data['status']) {
-        return Response::error('Пользователь не активен', 401);
-    }
-
-    if (!password_verify($password, $data['password'])) {
-        return Response::{$methodHandler}('Неправильный пароль:(', remove_item($params, 'no_error_password') ? 200 : 401);
-    }
-    $where = $data['id'];
-    $user_id = $data['id'];
-
+if (!$login || !$password) {
+    return Response::error("The login or password is empty :(", 401);
 }
 
+$data = ModelUsers::findOne(['name' => $login], ['password', 'id', 'status']);
+
+if (!$data) {
+    return Response::error('Wrong login:(', 401);
+}
+
+if (!$data['status']) {
+    return Response::error('User is disabled', 401);
+}
+
+if (!password_verify($password, $data['password'])) {
+    return Response::{$methodHandler}('Wrong password :(', $disabled_error ? 200 : 401);
+}
+$where = $data['id'];
+$user_id = $data['id'];
 
 $res = [];
 
 if ($extends['users']) {
     $res += $this->get($where,
         [
-            'extends' => isset($extends['users'][0]) ? $extends['users']: '' ,
             'limit' => 1,
-            'return' => 'one'
         ]
     );
 }

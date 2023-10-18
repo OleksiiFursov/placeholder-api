@@ -6,6 +6,7 @@
  */
 
 // FIND users:
+
 if (empty($filters)) {
     return Response::error('Filter is empty');
 }
@@ -19,7 +20,7 @@ if (empty($data)) {
 ]);
 
 
-$users_ids = ModelUsers::select('id')
+$users_ids = ModelSysUsers::select('id')
     ->where($filters)
     ->where(['id' => [1, '!=']])
     ->run(2);
@@ -27,7 +28,7 @@ $users_ids = ModelUsers::select('id')
 
 $users_ids = array_flat($users_ids);
 
-$_data = remove_items($data, [...ModelUsers::getColumnsForInsert(), 'password']);
+$_data = remove_items($data, [...ModelSysUsers::getColumnsForInsert(), 'password']);
 $is_user_confirmed = Access::check('users.confirmed');
 
 if (empty($users_ids)) {
@@ -118,7 +119,7 @@ if (sizeof($ins) || sizeof($_data)) {
 
 
 if (sizeof($_data))
-    ModelUsers::update($_data, $users_ids);
+    ModelSysUsers::update($_data, $users_ids);
 
 
 return is_done($data);

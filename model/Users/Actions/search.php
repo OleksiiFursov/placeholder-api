@@ -17,7 +17,7 @@ if ($_phone) {
     $ids = get_ids($phones, 'tax_id');
 }
 if(!$_phone){
-    $users = ModelUsers::find(['name' => $filters['name']]);
+    $users = ModelSysUsers::find(['name' => $filters['name']]);
     $mix = explode(" ", $filters['name']);
     if (count($mix) > 1) $mix = mix($mix);
 
@@ -112,7 +112,7 @@ $_PARAMS = [
     'limit' => null,
     'meta' => true,
     'full' => false,
-    'columns' => ModelUsers::columnsSafe(true, ['password', 'hash'])
+    'columns' => ModelSysUsers::columnsSafe(true, ['password', 'hash'])
 ];
 
 

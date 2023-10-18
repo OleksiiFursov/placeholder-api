@@ -1,4 +1,5 @@
 <?php
+
 define('START_TIME', microtime(true));
 define('START_MEMORY', memory_get_peak_usage());
 define("IS_DEV", true);
@@ -16,11 +17,12 @@ add_event('router.before', function($args){
     if ($token && preg_match('#^[0-9a-f]+$#', $token)) {
         add_event('DB_build.run', function ($args) use ($token) {
             if($args['context']->type !== 'insert'){
-                $args['context']->where(['token' => $token]);
+                $args['context']->where(['tu' => $token]);
             }
         });
 
-        $q = ModelUsers::findOne();
+
+        $q = ModelSysUsers::findOne();
         if (!$q) {
             Response::end('Не верный токен в URL', 403);
         }

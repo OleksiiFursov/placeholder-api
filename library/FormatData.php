@@ -7,6 +7,9 @@ class FormatData{
         ['date', 'date_created', 'date_update', 'birthday', 'time_update', 'date_expiration', 'datetime'],
     ];
 
+    static function password($a){
+        return $a;
+    }
     static function datetime($a){
         if(is_numeric($a))  return (int)$a;
         if(is_string($a))   return strtotime($a);

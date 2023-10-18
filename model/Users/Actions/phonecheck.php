@@ -36,7 +36,7 @@ if ($extends['auth']) {
         if($res['status'] === 1 && !$status_reg){
             $res['status'] = -10;
         }
-        $user = ModelUsers::findOne(['id' => $res['tax_id']], ['len_password']);
+        $user = ModelSysUsers::findOne(['id' => $res['tax_id']], ['len_password']);
         if (isset($user['len_password']) && $user['len_password'] === 0) {
             $res['status'] = -1;
             if(!$status_reg){

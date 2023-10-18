@@ -2,7 +2,7 @@
 
 $_INI = [];
 
-function stop($type, $msg = null, $level = 2)
+function stop($type='dev', $msg = null)
 {
     header("Content-Type: application/json; charset=utf-8");
 
@@ -203,32 +203,6 @@ function ini_push($key, $value, $index = null)
     return $_INI[$key];
 }
 
-function map($arr, $column, $def = '0x')
-{
-    $res = [];
-    for ($i = 0, $len = sizeof($column); $i < $len; $i++) {
-        if (!isset($arr[$column[$i]]) && $def === '0x') continue;
-        $res[$column[$i]] = $arr[$column[$i]] ?? $def;
-    }
-    return $res;
-}
-
-
-function filter_items($arr, $value, $each = NULL)
-{
-    $new = [];
-    foreach ($arr as $k => $v) {
-        if ($value === $v) {
-            if ($each) {
-                $each([&$v, &$k]);
-            }
-            $new[$k] = $v;
-        }
-    }
-    return $new;
-}
-
-
 function remove_items(&$arr, $keys, $options = [])
 {
     $res = [];
@@ -415,16 +389,6 @@ function str_search($reg, $search)
     return preg_match($reg, $search, $match) ? -1 : $match[1];
 }
 
-function has_id($arr, $id)
-{
-
-    for ($i = 0, $len = sizeof($arr); $i < $len; $i++) {
-        if ($arr[$i]['id'] == $id) {
-            return true;
-        }
-    }
-    return false;
-}
 
 function get_data($res)
 {
@@ -491,29 +455,14 @@ function is_done($data = [], $res = null)
 }
 
 
-function get_values($arr){
-    return remove_item($arr, 'values', remove_item($arr, 'value', []));
-}
 
 function get_ids($res, $column='id'){
     return array_map('intval', array_values(array_unique(array_column($res, $column))));
 }
 
-function toByte($str){
-    $unit = $str[-1];
-    $num = (int)$str;
-
-    return match($unit){
-        'G' => $num*1073741824,
-        'M' => $num*1048576,
-        'K' => $num*1024,
-        default => $num
-    };
-}
-
 function get_file_ext($filename){
     $ext = explode('.', $filename);
-    return  strtolower(end($ext));
+    return strtolower(end($ext));
 }
 
 function safe_include(string $file, $def=[]){
