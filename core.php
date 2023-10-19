@@ -16,10 +16,6 @@ function stop($type='dev', $msg = null)
     exit(-1);
 }
 
-function cmp($a, $b)
-{
-    return $b["date_achieve"] - $a["date_achieve"];
-}
 function remove_tax($data)
 {
     remove_field($data, ['tax_id', 'tax_type']);
@@ -362,11 +358,6 @@ function notice($msg, $name = null, $group = true)
 
 
     ini_push('notice', $new_msg, $name);
-}
-
-function info($msg, $name = null)
-{
-    ini_push('info', $msg, $name);
 }
 
 function getBearerToken(){
