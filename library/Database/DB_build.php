@@ -1277,13 +1277,13 @@ class DB_build
                 }
                 // Is sync:
                 if (isset($rules['sync'])) {
+
                     if (is_array($rules['sync'])) {
                         [$model, $key] = $rules['sync'];
                     } elseif (is_string($rules['sync'])) {
                         $model = $rules['sync'];
                         $key = 'id';
                     }
-
                     if (!$model::count([$key => $insKey])) {
                         Response::error('Error! Node "' . $key . '(' . $insKey . ')" - is not exists ' . $model);
                     }

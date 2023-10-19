@@ -113,15 +113,7 @@ function toArray($v)
 //    }
 //    return $res;
 //}
-function sum_arrays($a, $b)
-{
-    $r = [];
-    $keys = array_keys($a + $b);
-    foreach ($keys as $v) {
-        $r[$v] = (empty($a[$v]) ? 0 : $a[$v]) + (empty($b[$v]) ? 0 : $b[$v]);
-    }
-    return $r;
-}
+
 
 function mix($words)
 {
@@ -143,32 +135,6 @@ function mix($words)
     }
     return ($result);
 }
-
-
-function my_array_users_stats($users)
-{
-    $res = [];
-    $all = 0;
-    $sport_man = 0;
-    $trainer = 0;
-    $staff = 0;
-    foreach ($users as $v) {
-        if ($v['assignment_id'] === 1) {
-            $sport_man++;
-        } elseif ($v['assignment_id'] === 2) {
-            $trainer++;
-        } else {
-            $staff++;
-        }
-    }
-    return [
-        'all' => $all,
-        'sport_man' => $sport_man,
-        'trainer' => $trainer,
-        'staff' => $staff
-    ];
-}
-
 
 function my_array_group_callback($arr, $col, $cols)
 {
@@ -206,70 +172,6 @@ function my_array_group_callback($arr, $col, $cols)
 }
 
 
-function array_group_multikey($arr, $keys = [], $separator = ' ', $children = true)
-{
-
-
-    $res = [];
-    $keys_len = sizeof($keys);
-    foreach ($arr as $v) {
-        $key = [];
-        for ($i = 0; $i < $keys_len; $i++) {
-            $key[] = $v[$keys[$i]] ?? '';
-        }
-        $key = implode($separator, $key);
-        if (!isset($res[$key])) {
-            $res[$key] = [];
-        }
-        $res[$key][] = $v;
-    }
-    $buf = [];
-    foreach ($res as $k => $v) {
-        $d = explode($separator, $k);
-
-        $parent = [
-            'id' => $v[0]['sex'].$v[0]['age_start'].$v[0]['age_end']
-        ];
-
-        if($keys === ['program']){
-            $parent = [
-                'age_start' => $v[0]['age_start'],
-                'age_end' => $v[0]['age_end'],
-                'sex' => $v[0]['sex'],
-                'id' => $v[0]['sex'].$v[0]['age_start'].$v[0]['age_end'].($v[0]['program']==='tul'?1:2)
-            ];
-        }elseif ($keys === ['belt_start', 'belt_end']){
-            $parent = [
-                'age_start' => $v[0]['age_start'],
-                'age_end' => $v[0]['age_end'],
-                'sex' => $v[0]['sex'],
-                'program' => $v[0]['program'],
-                'id' => $v[0]['sex'].$v[0]['age_start'].$v[0]['age_end'].($v[0]['program']==='tul'?1:2).$v[0]['belt_start'].$v[0]['belt_end'],
-
-            ];
-        }elseif ($keys === ['weight_start', 'weight_end']){
-            $parent = [
-                'age_start' => $v[0]['age_start'],
-                'age_end' => $v[0]['age_end'],
-                'sex' => $v[0]['sex'],
-                'program' => $v[0]['program'],
-                'belt_start' => $v[0]['belt_start'],
-                'belt_end' => $v[0]['belt_end'],
-                'id' => $v[0]['sex'].$v[0]['age_start'].$v[0]['age_end'].($v[0]['program']==='tul'?1:2).$v[0]['belt_start'].$v[0]['belt_end'].$v[0]['weight_start'].$v[0]['weight_end'],
-            ];
-
-        }
-
-        $head = [];
-        for ($i = 0; $i < $keys_len; $i++) {
-            $head[$keys[$i]] = is_numeric($d[$i]) ? +$d[$i] : $d[$i];
-        }
-        if ($children)
-            $buf[] = [...$head, 'children' => $v, ...$parent,  'key' => $k];
-        else $buf[] = [...$head, ...$parent];
-    }
-    return $buf;
-}
 
 function array_group_callback($arr, $col = 'id', $callback = false, $one = false)
 {
@@ -341,22 +243,6 @@ function array_cascade($arr, $columns, $groupBy)
 
 }
 
-function add_arr_prefix($arr, $prefix)
-{
-    foreach ($arr as $key => &$item) {
-        $arr[$key] = $prefix . $item;
-    }
-    return $arr;
-}
-
-function arr_alias($arr, $prefix)
-{
-    foreach ($arr as $key => &$item) {
-        $arr[$key] = $prefix . $item . ' as ' . $item;
-    }
-    return $arr;
-}
-
 function array_group_callback_key($arr, $col, $name = 'name', $value = 'value')
 {
     $res = [];
@@ -413,33 +299,6 @@ function array_group($arr, $col = 'name', $valName = 'value', $replaceDupl = tru
     return $res;
 }
 
-function arr_sum(&$arr, $arr2, $columns = null)
-{
-
-    if (!$columns) {
-        $columns = array_keys($arr2);
-    }
-    if (!is_array($columns)) {
-        $columns = [$columns];
-    }
-
-    for ($i = 0, $len = sizeof($columns); $i < $len; $i++) {
-        if (isset($arr2[$columns[$i]])) {
-
-            if (is_array($arr2[$columns[$i]])) {
-                arr_sum($arr[$columns[$i]], $arr2[$columns[$i]]);
-                continue;
-            }
-            //  if(is_numeric( $arr2[$columns[$i]])){
-            if (!isset($arr[$columns[$i]])) {
-                $arr[$columns[$i]] = 0;
-            }
-            $arr[$columns[$i]] += $arr2[$columns[$i]];
-            // }
-
-        }
-    }
-}
 
 function arr_merge_by_column(&$arr, &$arr2, $columns_array = null, $uniq_column = 'id')
 {
@@ -493,16 +352,6 @@ function array_each($arr, $call)
     return $arr;
 }
 
-function copyItems($arr, $items)
-{
-    $res = [];
-    foreach ($arr as $k => $v) {
-        if (in_array($k, $items))
-            $res[$k] = $v;
-    }
-    return $res;
-}
-
 function formatAll(&$arr, $types)
 {
 
@@ -511,12 +360,16 @@ function formatAll(&$arr, $types)
     ];
     $simple_types = ['int', 'string', 'boolean', 'double', 'bool', 'double'];
 
+    $sync = [];
     for ($i = 0, $len = sizeof($arr); $i < $len; $i++) {
 
         foreach ($arr[$i] as $key => &$value) {
             if (!isset($types[$key])) continue;
 
             $type = $types[$key][0];
+//            if(isset($type['sync'])){
+//                //$sync
+//            }
             if (in_array($type, $simple_types)) {
                 settype($value, $type);
             } else {
@@ -535,9 +388,4 @@ function formatAll(&$arr, $types)
 function array_flat($arr, $type = null)
 {
     return array_merge(...$arr);
-}
-
-function toArrayMany($arr)
-{
-    return isset($arr[0]) ? $arr : [$arr];
 }

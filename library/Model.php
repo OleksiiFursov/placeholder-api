@@ -247,7 +247,6 @@ class Model
     function format(&$values, $custom_rules = NULL, $deep = false)
     {
         $rules = FormatData::$params;
-
         if ($custom_rules) {
             $rules = array_merge($rules, $custom_rules);
         }
@@ -512,9 +511,6 @@ class Model
             return 0;
         }
 
-        $History = new History;
-
-
         $sql = $db->build()->from($table::get_meta_table());
         $metaData = (clone $sql)->select('name, tax_id')
             ->where('tax_id', $tax_ids)
@@ -547,31 +543,12 @@ class Model
                         'name' => $key
                     ])->run();
 
-                    $prev_id = $prev['id'];
+
                     (clone $sql)->insert([
                         'value' => $val,
                         'tax_id' => $tax_id,
                         'name' => $key,
                     ])->run();
-                    $new_id = $db->insert_id;
-
-                    if ($table === 'ModelPatient') {
-                        $action_name = 'patient/' . $key;
-                    } else {
-                        $action_name = $table;
-                    }
-
-                    $History->add([
-                        'action_name' => $action_name,
-                        'action' => 'edit',
-                        'prev_id' => $prev_id,
-                        'new_id' => $new_id,
-                        'tax_id' => $tax_id,
-                        'owner_id' => user_id(),
-                        'clinic_id' => $user['clinic_id'],
-                        'department_id' => $user['department_id']
-                    ]);
-
 
                 } else {
                     $meta[] = [
@@ -598,7 +575,7 @@ class Model
         global $db;
         $meta = [];
         $q = 0;
-        $History = new History;
+
         foreach ($data as $key => $val) {
             $meta[$q] = [
                 'tax_id' => $tax_id,
@@ -622,16 +599,6 @@ class Model
             if (!isset($user['department_id']))
                 $user['department_id'] = -1;
 
-            $History->add([
-                'action_name' => $action_name,
-                'action' => 'add',
-                'prev_id' => null,
-                'new_id' => $new_id,
-                'tax_id' => $tax_id,
-                'owner_id' => user_id(),
-                'clinic_id' => $user['clinic_id'],
-                'department_id' => $user['department_id']
-            ]);
             $q++;
         }
 
@@ -706,11 +673,4 @@ class Model
     }
 
 
-//    public function get_user_active(){
-//        global $USER;
-//        return [
-//            'id' => $USER['id'],
-//
-//        ]
-//    }
 }

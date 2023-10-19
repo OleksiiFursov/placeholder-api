@@ -3,7 +3,7 @@ class ModelTodo extends BaseModel
 {
     static $table = 'todo';
     static $columns = [
-        'token' => ['string'],
+        'tu' => ['string', ],
         'name' => ['string'],
         'date' => ['datetime'],
         'description' => ['string'],
@@ -11,7 +11,7 @@ class ModelTodo extends BaseModel
         'status'    => ['int', 'default'=>0, 'sync' => ['ModelVocabulary', 'name']],
     ];
     static function onInsert(){
-        self::$columns['token']['default'] = ini('user.token');
+        self::$columns['tu']['default'] = ini('user.token');
     }
 
 }

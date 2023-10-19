@@ -11,6 +11,7 @@ class FormatData{
         return $a;
     }
     static function datetime($a){
+        if($a === '0000-00-00 00:00:00') return null;
         if(is_numeric($a))  return (int)$a;
         if(is_string($a))   return strtotime($a);
         return $a;
