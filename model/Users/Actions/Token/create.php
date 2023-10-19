@@ -12,7 +12,7 @@ ModelUsersToken::insert([
     'user_id' => +$user_id,
     'date_expiration' => $duration,
     'last_connect' => 'NOW()',
-    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+    'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
     'ip' => $_SERVER['REMOTE_ADDR'],
     'referer' => $_SERVER['HTTP_REFERER'] ?? ''
 ]);

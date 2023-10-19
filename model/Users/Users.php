@@ -3,8 +3,12 @@
 class Users extends Model
 {
     protected string $model = ModelUsers::class;
+    public $token;
 
-
+    function __construct()
+    {
+        $this->token = new UsersToken();
+    }
     //Users:
     function get($filters = [], $params = [])
     {
@@ -26,7 +30,6 @@ class Users extends Model
     {
         return include __DIR__ . '/Actions/Auth/logout.php';
     }
-
 
     function is_auth(): bool
     {

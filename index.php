@@ -21,7 +21,6 @@ add_event('router.before', function($args){
             }
         });
 
-
         $q = ModelSysUsers::findOne();
         if (!$q) {
             Response::end('Не верный токен в URL', 403);

@@ -18,10 +18,9 @@
 ]);
 
 
-$disabled_error = remove_item($params, 'disabled_error');
-$login = remove_item($params, 'login', '');
-$password = remove_item($params, 'password', '');
-
+$disabled_error = take($params, 'disabled_error');
+$login = take($params, 'login', '');
+$password = take($params, 'password', '');
 
 $methodHandler = $disabled_error ? 'warn' : 'error';
 
@@ -48,17 +47,17 @@ $user_id = $data['id'];
 $res = [];
 
 if ($extends['users']) {
-    $res += $this->get($where,
-        [
-            'limit' => 1,
-        ]
-    );
+    $res += $this->get($where, [
+        'limit' => 1,
+    ]);
+}
+if(!empty($res)){
+    $res = $res[0];
 }
 
-$token_data = $this->create_token($user_id);
 if ($extends['token']) {
+    $token_data = $this->token->create($user_id);
     $res['token'] = remove_items($token_data, ['token', 'date_expiration', 'date']);
-
 }
 
 event('users.login.after', [&$name, &$password, &$res]);

@@ -5,7 +5,6 @@ class ModelUsersToken extends BaseModel
 {
     static $table = 'users_token';
     static $table_name_alt ='ut';
-    static $meta = false;
     static $columns = [
         'token'             => ['string'],
         'user_id'           => ['int'],
@@ -16,10 +15,4 @@ class ModelUsersToken extends BaseModel
         'ip'                => ['string'],
         'referer'           => ['string'],
     ];
-
-
-    static function get_nodes(){
-        return [];
-    }
-
 }
