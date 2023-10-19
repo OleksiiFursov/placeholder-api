@@ -3,7 +3,8 @@ class ModelTodo extends BaseModel
 {
     static $table = 'todo';
     static $columns = [
-        'tu' => ['string', ],
+        'id' => ['int'],
+        'tu' => ['string', 'safe' => false],
         'name' => ['string'],
         'date' => ['datetime'],
         'description' => ['string'],

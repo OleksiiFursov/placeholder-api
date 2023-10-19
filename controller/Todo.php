@@ -13,10 +13,13 @@ class CI_Todo extends Controller{
         $params = GET();
         return ModelTodo::insert($params);
     }
+    function _delete($id){
+        return ModelTodo::delete($id);
+    }
     function _patch($id){
         $params = GET();
-        json($GLOBALS);
         $filters = take($params, 'filters', $id);
+        //notice(GET());
         return ModelTodo::update($params, $filters);
     }
     function add(){
