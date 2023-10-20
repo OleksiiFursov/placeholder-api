@@ -5,6 +5,10 @@ class CI_Customer extends Controller{
     {
 
     }
+    function demo(){
+        $res = file_get_contents(DIR.'/model/Customer/demo.json');
+        return ModelCustomer::insert(json_decode($res, true));
+    }
     function _get($id){
         $filter = GET('filter') ?? $id;
         return ModelCustomer::find($filter);

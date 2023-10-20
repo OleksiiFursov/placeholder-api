@@ -218,7 +218,6 @@ class DB_build
                 break;
             case 'insert':
                 $from = preg_replace('/as \w+/', '', $from);
-
                 if (empty($this->insert)) {
                     return false;
                 }
@@ -234,10 +233,10 @@ class DB_build
                         return $this->db->ins($this->from[0], $this->insert[0], false, true);
 
                     }
-
                 }
 
                 if (!sizeof($arr)) break;
+
 
                 $is_columns = empty($this->columns);
                 if ($is_columns) {
@@ -1167,7 +1166,6 @@ class DB_build
 
         $excludes = ['id', 'date_created', 'date_updated', 'date'];
         for ($k = 0; $k < $len; $k++) {
-
             foreach ($columns as $key => $rules) {
                 if (in_array($key, $excludes)) continue;
 
