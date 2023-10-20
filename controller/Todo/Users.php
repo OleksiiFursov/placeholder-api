@@ -16,7 +16,7 @@ class CI_TodoUsers extends Controller{
 
         return 'todo->get->users->'.$args;
         $filter = GET('filter') ?? [];
-        return ModelTodo::find($filter);
+        return ModelCustomer::find($filter);
     }
     function add(){
         $data = GET();

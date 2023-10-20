@@ -1,6 +1,6 @@
 <?php
 
-class CI_Todo extends Controller{
+class CI_Customer extends Controller{
     public function __construct()
     {
 
