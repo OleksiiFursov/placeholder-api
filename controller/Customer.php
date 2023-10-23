@@ -48,6 +48,7 @@ class CI_Customer extends Controller{
     }
     function _patch($id){
         $params = GET();
+        json($params);
         $filters = take($params, 'filters', $id);
         //notice(GET());
         return ModelCustomer::update($params, $filters);

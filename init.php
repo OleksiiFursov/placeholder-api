@@ -19,12 +19,20 @@ set_exception_handler(['Errors', 'captureException']);
 register_shutdown_function(['Errors', 'captureShutdown']);
 
 
-if(!sizeof($_POST)) {
-    $pseudoPost = file_get_contents('php://input');
-    if ($pseudoPost) {
-        $_POST = json_decode($pseudoPost, true) ?? [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'PATCH') {
+    if (!sizeof($_POST)) {
+        $pseudoPost = file_get_contents('php://input');
 
-        $_REQUEST+=$_POST;
+        if ($pseudoPost) {
+            // Проверяем метод запроса, если это PATCH, то парсим данные JSON-объекта
+            if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+                parse_str($pseudoPost, $_POST);
+            } else {
+                $_POST = json_decode($pseudoPost, true) ?? [];
+            }
+
+            $_REQUEST += $_POST;
+        }
     }
 }
 
