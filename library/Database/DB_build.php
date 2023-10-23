@@ -217,10 +217,10 @@ class DB_build
 
                 break;
             case 'insert':
+                if (empty($this->insert)) return false;
+
                 $from = preg_replace('/as \w+/', '', $from);
-                if (empty($this->insert)) {
-                    return false;
-                }
+
 
                 if (!arr_is_assoc($this->insert) && sizeof($this->insert) > 1) {
                     $arr = $this->insert;
@@ -238,15 +238,18 @@ class DB_build
                 if (!sizeof($arr)) break;
 
 
-                $is_columns = empty($this->columns);
-                if ($is_columns) {
-                    $columns = array_keys($arr[0]);
+                if ($this->model) {
+                    $columns = $this->model::getColumnsForInsert();
+                    $diff = array_diff(array_keys($arr[0]), $columns);
+                    if ($diff) {
+                        return Response::error('Model ' . $this->model . '->insert failed ' . json_encode($diff, 256));
+                    }
                 } else {
-                    $columns = $this->columns;
+                    $columns = array_keys($arr[0]);
                 }
 
 
-                $buf = [];
+                    $buf = [];
                 for ($i = 0, $len = sizeof($arr); $i < $len; $i++) {
                     $item = [];
 
@@ -1164,6 +1167,7 @@ class DB_build
 
         $len = sizeof($data);
 
+        $cacheSync = [];
         $excludes = ['id', 'date_created', 'date_updated', 'date'];
         for ($k = 0; $k < $len; $k++) {
             foreach ($columns as $key => $rules) {
@@ -1173,12 +1177,14 @@ class DB_build
 
                 // Required:
                 if (!isset($insKey)) {
+
                     if (!$isInsert) continue;
                     if (!isset($rules['require']) || $rules['require'] === TRUE) {
                         if (!isset($rules['default'])) {
                             Response::error($this->model . ': Field ' . $key . ' - is require');
                             continue;
                         } else {
+
                             $insKey = $rules['default'];
                         }
                     } else {
@@ -1186,64 +1192,13 @@ class DB_build
                     }
                 }
 
+
                 // Type:
-                $is_valid = false;
-                switch ($rules[0]) {
-                    case 'int':
-                        $is_valid = is_numeric($insKey);
-                        if ($is_valid)
-                            settype($insKey, 'integer');
-                        break;
-                    case 'password':
-                        $insKey = password_hash($insKey, PASSWORD_DEFAULT);
-                        break;
-                    case 'string':
-                        $is_valid = is_string($insKey);
-                        break;
-                    case 'bool':
-                        $is_valid = is_bool($insKey) || $insKey == '0' || $insKey == '1';
-                        if ($is_valid)
-                            settype($insKey, 'boolean');
-                        break;
-                    case 'float':
-                        $is_valid = is_double($insKey);
-                        if ($is_valid)
-                            $insKey = +$insKey;
-                        break;
-                    case 'date':
-                        if ($insKey === 'NOW()') {
-                            $is_valid = true;
-                        } else if (is_numeric($insKey)) {
-                            $is_valid = true;
-                            $insKey = date('Y-m-d', $insKey);
-                        } else {
-                            $is_valid = strtotime($insKey);
-                            if ($is_valid)
-                                $insKey = date('Y-m-d', $is_valid);
+                $method = 'set' . ucfirst($rules[0]);
+                $is_valid = FormatData::{$method}($insKey, $rules);
 
-                        }
-                        break;
-
-                    case 'enum':
-                        $is_valid = in_array($insKey, $rules[1]);
-                        break;
-                    case 'datetime':
-                        if ($insKey === 'NOW()') {
-                            $is_valid = true;
-                        } else if (is_numeric($insKey)) {
-                            $is_valid = true;
-                            $insKey = date('Y-m-d H:i:s', $insKey);
-                        } else {
-                            $is_valid = strtotime($insKey);
-                            if ($is_valid)
-                                $insKey = date('Y-m-d H:i:s', $is_valid);
-
-                        }
-
-                        break;
-                }
                 if (!$is_valid) {
-                    Response::error($this->model . ': Field ' . $key . ' ' . $rules[0] . ' - is wrong type');
+                    Response::error($this->model . ': Field "' . $key . '" (' . $rules[0] . ') - is wrong type. Value is '.var_export($insKey, true));
                 }
 
                 // Valid:
@@ -1277,14 +1232,33 @@ class DB_build
                 if (isset($rules['sync'])) {
 
                     if (is_array($rules['sync'])) {
-                        [$model, $key] = $rules['sync'];
+                        [$model, $s_key] = $rules['sync'];
                     } elseif (is_string($rules['sync'])) {
                         $model = $rules['sync'];
-                        $key = 'id';
+                        $s_key = 'id';
                     }
-                    if (!$model::count([$key => $insKey])) {
-                        Response::error('Error! Node "' . $key . '(' . $insKey . ')" - is not exists ' . $model);
+
+
+                    $v_context = substr(strtolower($this->model), 5).'-'.$key;
+
+                    if($model === 'ModelVocabulary'){
+                        if(!isset($cacheSync[$v_context])){
+                            $q = $model::find([
+                                'context' => $v_context,
+                                'lang'    => 'en'
+                            ], ['name', 'value']);
+                            $cacheSync[$v_context] = array_group($q, 'name', 'value');
+                        }
+
+                        if (!$cacheSync[$v_context][$insKey]) {
+                            Response::error('Error! In "' . $s_key . '(' . $insKey . ')" - is not exists ' . $model);
+                        }
+                    }else{
+                        if (!$model::count([$key => $insKey, 'context' => $v_context])) {
+                            Response::error('Error! Node "' . $key . '(' . $insKey . ')" - is not exists ' . $model);
+                        }
                     }
+
                 }
             }
             if (!empty(Response::$error)) {

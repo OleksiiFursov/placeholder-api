@@ -6,6 +6,30 @@ class CI_Customer extends Controller{
 
     }
     function demo(){
+        $params = array_merge([
+            'reset_vocabulary' => true
+        ], GET());
+
+        if($params['reset_vocabulary']){
+
+            ModelVocabulary::delete([
+               'context' => 'customer-status'
+            ]);
+
+            ModelVocabulary::insert([
+                [
+                    'context' => 'customer-status',
+                    'name' => '0',
+                    'value' => 'inactive'
+                ],
+                [
+                    'context' => 'customer-status',
+                    'name' => '1',
+                    'value' => 'active'
+                ],
+            ]);
+        }
+
         $res = file_get_contents(DIR.'/model/Customer/demo.json');
         return ModelCustomer::insert(json_decode($res, true));
     }

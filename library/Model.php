@@ -264,7 +264,8 @@ class Model
 
                     $this->format($values[$rule[$j]], $custom_rules, $deep);
                 } else {
-                    $values[$rule[$j]] = FormatData::{$type}($values[$rule[$j]]);
+                    $method = 'get'.ucfirst($type);
+                    $values[$rule[$j]] = FormatData::{$method}($values[$rule[$j]]);
                 }
 
             }

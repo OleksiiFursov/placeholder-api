@@ -6,9 +6,12 @@ class ModelVocabulary extends BaseModel
     static $table_name_alt = 'vc';
     static $columns = [
         'context' => ['string'],
-        'token'   => ['string', 'require' => false],
+        'tu'   => ['string', 'safe' => true],
         'name' => ['string'],
         'value' => ['string'],
         'lang'  => ['string', 'default' => 'en']
     ];
+    static function onInsert(){
+        self::$columns['tu']['default'] = ini('user.token');
+    }
 }

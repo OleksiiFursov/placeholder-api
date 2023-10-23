@@ -376,7 +376,8 @@ function formatAll(&$arr, $types)
                 if (isset($typeAs[$type])) {
                     $type = $typeAs[$type];
                 }
-                $value = FormatData::{$type}($value);
+                $method = 'get'.ucfirst($type);
+                $value = FormatData::{$method}($value);
             }
         }
 

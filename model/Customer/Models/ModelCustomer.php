@@ -1,7 +1,7 @@
 <?php
 class ModelCustomer extends BaseModel
 {
-    static $table = 'todo';
+    static $table = 'customers';
     static $columns = [
         'id' => ['int'],
         'tu' => ['string', 'safe' => false],
@@ -10,13 +10,16 @@ class ModelCustomer extends BaseModel
         'last_name' => ['string'],
         'email' => ['string'],
         'phone' => ['string'],
-        'createdAt' => ['datetime', 'required' => false],
-        'updatedAt' => ['datetime', 'required' => false],
+        'createdAt' => ['datetime', 'require' => false],
+        'updatedAt' => ['datetime', 'require' => false],
         'birthday' => ['datetime'],
         'about' => ['string'],
-        'location' => ['string'],
+        'location' => ['location'],
+        'balance' => ['string'],
+        'gender' => ['int'],
         'company' => ['string'],
-        'status'    => ['int', 'default'=>0, 'sync' => ['ModelVocabulary', 'name']],
+        'address' => ['string'],
+        'status'    => ['int', 'default'=>1, 'sync' => ['ModelVocabulary', 'name']],
     ];
     static function onInsert(){
         self::$columns['tu']['default'] = ini('user.token');

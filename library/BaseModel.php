@@ -38,16 +38,6 @@ class BaseModel
     }
 
 
-    static function getColumns()
-    {
-        $col = static::columnsSafe();
-
-        for ($i = 0, $len = sizeof($col); $i < $len; $i++) {
-            $col[$i] = static::$table_name_alt . '.' . $col[$i];
-        }
-        return $col;
-    }
-
     static function columnsSafe($prefix = true, $filters = false): array
     {
         $columns = [];
@@ -96,7 +86,7 @@ class BaseModel
     static function getColumnsForInsert()
     {
 
-        $columns = static::columnsSafe(false);
+        $columns = array_keys(static::$columns);
         $res = [];
         for ($i = 0, $len = sizeof($columns); $i < $len; $i++) {
             if (in_array($columns[$i], ['id', 'date_created', 'date_updated', 'date', 'time_update'])) {
@@ -176,7 +166,7 @@ class BaseModel
     static function delete($data)
     {
         global $db;
-        return $db->build()->delete($data)->model(static::class);
+        return $db->build()->model(static::class)->delete($data)->run();
     }
     static function disabled($where, $status=0){
         global $db;
@@ -190,7 +180,8 @@ class BaseModel
           $res->where($filters);
         }
         if($run !== null)
-        return $res->run($run);
+            return $res->run($run);
+        return $res;
     }
 
     static function findGroup($where = null, $col = null, $groupBy='tax_id', $run=1){
