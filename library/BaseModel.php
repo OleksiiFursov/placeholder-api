@@ -163,7 +163,7 @@ class BaseModel
         }
         return $r->run();
     }
-    static function delete($data)
+    static function delete($data=[])
     {
         global $db;
         return $db->build()->model(static::class)->delete($data)->run();

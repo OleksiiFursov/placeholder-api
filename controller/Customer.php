@@ -7,7 +7,8 @@ class CI_Customer extends Controller{
     }
     function demo(){
         $params = array_merge([
-            'reset_vocabulary' => true
+            'reset_vocabulary' => true,
+            'reset_customer'   => true
         ], GET());
 
         if($params['reset_vocabulary']){
@@ -29,13 +30,14 @@ class CI_Customer extends Controller{
                 ],
             ]);
         }
-
+        if($params['reset_customer']){
+            ModelCustomer::delete();
+        }
         $res = file_get_contents(DIR.'/model/Customer/demo.json');
         return ModelCustomer::insert(json_decode($res, true));
     }
     function _get($id){
-        $filter = GET('filter') ?? $id;
-        return ModelCustomer::find($filter);
+        return ModelCustomer::find($id ?? GET('filter'));
     }
     function _post(){
         $params = GET();

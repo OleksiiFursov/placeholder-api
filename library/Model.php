@@ -193,7 +193,7 @@ class Model
         return array_map($func, array_flip($def)) + $struct;
     }
 
-    function get_filter($filter, $def, $args_type = [])
+    function get_filter($filter, $def=[], $args_type = [])
     {
         if (empty($filter)) return $def;
         if (is_array($filter)) {

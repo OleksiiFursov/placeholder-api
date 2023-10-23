@@ -490,3 +490,4 @@ function takes(&$arr, $keys, $options=[]){
     }
     return $res;
 }
+
