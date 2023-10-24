@@ -1,0 +1,39 @@
+_id: req_ca03bdfdb615440d88b357c3e56b8d57
+type: Request
+parentId: fld_6894aca61c8647ce854c322fe640c550
+modified: 1698150601104
+created: 1698149093386
+url: http://placeholder-api.test/123456/todo
+name: post
+description: ""
+method: POST
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
+      name: name
+      value: Article
+      description: ""
+      disabled: false
+    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
+      name: description
+      value: Lorem :)
+      description: ""
+      disabled: false
+parameters:
+  - id: pair_bc430afeec4644a594d7d4171408127c
+    name: ""
+    value: ""
+    description: ""
+headers:
+  - name: Content-Type
+    value: multipart/form-data
+authentication: {}
+metaSortKey: -1698149056458
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

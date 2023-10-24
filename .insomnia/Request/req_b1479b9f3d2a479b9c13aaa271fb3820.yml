@@ -1,0 +1,30 @@
+_id: req_b1479b9f3d2a479b9c13aaa271fb3820
+type: Request
+parentId: fld_6894aca61c8647ce854c322fe640c550
+modified: 1698152099851
+created: 1698149093396
+url: http://placeholder-api.test/123456/todo
+name: delete
+description: ""
+method: DELETE
+body:
+  mimeType: application/json
+  text: |-
+    {
+    	"filter": {
+    		"id": [19, 25] 
+    	}
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+authentication: {}
+metaSortKey: -1698149056658
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

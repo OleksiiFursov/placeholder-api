@@ -1,0 +1,35 @@
+_id: req_c4a35fc8932b4f139c45e46a7a788e02
+type: Request
+parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
+modified: 1698149062107
+created: 1698072903765
+url: http://placeholder-api.test/123456/customer/demo
+name: demo
+description: ""
+method: GET
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
+      name: login
+      value: test
+      description: ""
+      disabled: true
+    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
+      name: password
+      value: "123456"
+      description: ""
+      disabled: true
+parameters: []
+headers:
+  - name: Content-Type
+    value: multipart/form-data
+authentication: {}
+metaSortKey: -1698149056358
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

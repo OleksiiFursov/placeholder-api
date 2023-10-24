@@ -1,0 +1,45 @@
+_id: req_3492be0ab02d40ddb1b3ee768022e6c2
+type: Request
+parentId: fld_6894aca61c8647ce854c322fe640c550
+modified: 1698149115129
+created: 1698149093383
+url: http://placeholder-api.test/123456/todo/get
+name: get
+description: ""
+method: GET
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
+      name: ""
+      value: "1"
+      description: ""
+      disabled: true
+    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
+      name: password
+      value: "123456"
+      description: ""
+      disabled: true
+parameters:
+  - id: pair_9d2aa050d87d45c59c24ada68fa747eb
+    name: filter[status]
+    value: "1"
+    description: ""
+    disabled: true
+  - id: pair_cc4478a205b344edb74558187dc5d704
+    name: filter[gender]
+    value: "0"
+    description: ""
+    disabled: true
+headers:
+  - name: Content-Type
+    value: multipart/form-data
+authentication: {}
+metaSortKey: -1698149056258
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

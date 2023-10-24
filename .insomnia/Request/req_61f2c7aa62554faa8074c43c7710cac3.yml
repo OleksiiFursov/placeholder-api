@@ -1,0 +1,36 @@
+_id: req_61f2c7aa62554faa8074c43c7710cac3
+type: Request
+parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
+modified: 1698149073563
+created: 1697729203792
+url: http://placeholder-api.test/123456/customer/5
+name: patch
+description: ""
+method: PATCH
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
+      name: gender
+      value: "0"
+      description: ""
+      disabled: false
+    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
+      name: description
+      value: Lorem :)
+      description: ""
+      disabled: true
+parameters: []
+headers:
+  - name: Content-Type
+    value: multipart/form-data; boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW
+    id: pair_50889bdbd8434049a37466d8d8eeacc1
+authentication: {}
+metaSortKey: -1698149056558
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

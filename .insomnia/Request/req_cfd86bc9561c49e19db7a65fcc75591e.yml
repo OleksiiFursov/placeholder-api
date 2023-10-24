@@ -1,0 +1,36 @@
+_id: req_cfd86bc9561c49e19db7a65fcc75591e
+type: Request
+parentId: fld_6894aca61c8647ce854c322fe640c550
+modified: 1698151582832
+created: 1698149093390
+url: http://placeholder-api.test/123456/todo/15
+name: patch
+description: ""
+method: PATCH
+body:
+  mimeType: multipart/form-data
+  params:
+    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
+      name: name
+      value: 111gg
+      description: ""
+      disabled: false
+    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
+      name: description
+      value: Lorem :)4545
+      description: ""
+      disabled: false
+parameters: []
+headers:
+  - name: Content-Type
+    value: multipart/form-data; boundary=---WebKitFormBoundary7MA4YWxkTrZu0gW
+    id: pair_50889bdbd8434049a37466d8d8eeacc1
+authentication: {}
+metaSortKey: -1698149056558
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
