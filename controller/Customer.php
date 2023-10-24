@@ -1,10 +1,7 @@
 <?php
 
 class CI_Customer extends Controller{
-    public function __construct()
-    {
-
-    }
+    public string|ModelCustomer $model="ModelCustomer";
     function demo(){
         $params = array_merge([
             'reset_vocabulary' => true,
@@ -31,27 +28,22 @@ class CI_Customer extends Controller{
             ]);
         }
         if($params['reset_customer']){
-            ModelCustomer::delete();
+            $this->model::delete();
         }
         $res = file_get_contents(DIR.'/model/Customer/demo.json');
-        return ModelCustomer::insert(json_decode($res, true));
+        return $this->model::insert(json_decode($res, true));
     }
     function _get($id){
-        return ModelCustomer::find($id ?? GET('filter'));
+        return $this->model::find($id ?? GET('filter'));
     }
     function _post(){
-        $params = GET();
-        return ModelCustomer::insert($params);
+        return $this->model::insert(GET());
     }
     function _delete($id){
-        return ModelCustomer::delete($id);
+        return $this->delete_wrap( $id);
     }
     function _patch($id){
-        $params = GET();
-        json($params);
-        $filters = take($params, 'filters', $id);
-        //notice(GET());
-        return ModelCustomer::update($params, $filters);
+        return $this->patch_wrap( $id);
     }
     function add(){
         return $this->_post();

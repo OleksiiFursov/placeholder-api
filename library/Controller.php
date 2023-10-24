@@ -6,11 +6,33 @@ class Controller extends Model
     function __call($method, $arguments)
     {
         $className = get_called_class();
-        $cls = $className . '_' . $method;
         return Response::end( 'Not found method "' . $method . '" in ' . $className, 404);
     }
 
+    function delete_wrap($id){
 
+        if(!$id){
+            return Response::error('id is required', 422);
+        }
+        if(!$this->model::count($id)){
+            return Response::error('Not found id', 404);
+        }
+        $params = GET();
+        $filters = take($params, 'filters', $id);
+        return $this->model::delete($id);
+    }
+
+    function patch_wrap($id){
+        if(!$id){
+            return Response::error('id is required', 422);
+        }
+        if(!$this->model::count($id)){
+            return Response::error('Not found id', 404);
+        }
+        $params = GET();
+        $filters = take($params, 'filters', $id);
+        return $this->model::update($params, $filters);
+    }
     function child($className, $method, $args){
         $className = $className.ucfirst($method);
 

@@ -17,24 +17,45 @@ if(( defined('IS_DEV') && IS_DEV ) || isset($_GET['debug'])) {
 set_error_handler(['Errors', 'captureNormal']);
 set_exception_handler(['Errors', 'captureException']);
 register_shutdown_function(['Errors', 'captureShutdown']);
+if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+    $input = file_get_contents('php://input');
 
+    // Extracting the boundary
+    preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+    $boundary = $matches[1];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' || $_SERVER['REQUEST_METHOD'] === 'PATCH') {
-    if (!sizeof($_POST)) {
-        $pseudoPost = file_get_contents('php://input');
+    // Splitting the data using the boundary
+    $blocks = preg_split("/-+$boundary/", $input);
+    array_pop($blocks);
 
-        if ($pseudoPost) {
-            // Проверяем метод запроса, если это PATCH, то парсим данные JSON-объекта
-            if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
-                parse_str($pseudoPost, $_POST);
-            } else {
-                $_POST = json_decode($pseudoPost, true) ?? [];
-            }
+    $data = [];
+    foreach ($blocks as $id => $block) {
+        if (empty($block))
+            continue;
 
-            $_REQUEST += $_POST;
+        if (str_contains($block, 'application/octet-stream')) {
+            // Handle files here
+            continue;
+        }
+
+        if (preg_match('/name="([^"]+)"\s*([\s\S]+)/', $block, $matches)) {
+            $name = $matches[1];
+            $value = rtrim($matches[2]);
+
+            // Storing the parsed values
+            $data[$name] = $value;
         }
     }
+    $_REQUEST += $data;
 }
+//    if (!sizeof($_POST)) {
+//    $pseudoPost = file_get_contents('php://input');
+//    if ($pseudoPost) {
+//        $_POST = json_decode($pseudoPost, true) ?? [];
+//
+//        $_REQUEST += $_POST;
+//    }
+//}
 
 
 // SYSTEM:
