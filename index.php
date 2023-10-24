@@ -2,7 +2,7 @@
 
 define('START_TIME', microtime(true));
 define('START_MEMORY', memory_get_peak_usage());
-define("IS_DEV", true);
+define("IS_DEV", false);
 
 
 ini_set('error_reporting', -1);

@@ -1,8 +1,5 @@
 <?php
 
-namespace Browser;
-use Model;
-
 /**
  * Class Browser
  */

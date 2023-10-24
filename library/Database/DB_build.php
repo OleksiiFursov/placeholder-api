@@ -249,7 +249,7 @@ class DB_build
                 }
 
 
-                    $buf = [];
+                $buf = [];
                 for ($i = 0, $len = sizeof($arr); $i < $len; $i++) {
                     $item = [];
 
@@ -285,6 +285,16 @@ class DB_build
                 if (empty($where))
                     return Response::warn('MySQL: Update is empty');
 
+
+                if ($this->model) {
+                    $columns = $this->model::getColumnsForInsert();
+                    $diff = array_diff(array_keys($this->update[0]), $columns);
+                    if ($diff) {
+                        return Response::error('Model ' . $this->model . '->update failed ' . json_encode($diff, 256));
+                    }
+                } else {
+                    $columns = array_keys($this->update[0]);
+                }
                 if (!arr_is_assoc($this->update) && sizeof($this->update) > 1) {
                     $arr = $this->update;
                 } else {
@@ -295,11 +305,6 @@ class DB_build
                 if (!sizeof($arr)) break;
 
                 $is_columns = empty($this->columns);
-                if ($is_columns) {
-                    $columns = array_keys($arr[0]);
-                } else {
-                    $columns = $this->columns;
-                }
 
 
                 $buf = [];
@@ -1198,7 +1203,7 @@ class DB_build
                 $is_valid = FormatData::{$method}($insKey, $rules);
 
                 if (!$is_valid) {
-                    Response::error($this->model . ': Field "' . $key . '" (' . $rules[0] . ') - is wrong type. Value is '.var_export($insKey, true));
+                    Response::error($this->model . ': Field "' . $key . '" (' . $rules[0] . ') - is wrong type. Value is ' . var_export($insKey, true));
                 }
 
                 // Valid:
@@ -1239,13 +1244,13 @@ class DB_build
                     }
 
 
-                    $v_context = substr(strtolower($this->model), 5).'-'.$key;
+                    $v_context = substr(strtolower($this->model), 5) . '-' . $key;
 
-                    if($model === 'ModelVocabulary'){
-                        if(!isset($cacheSync[$v_context])){
+                    if ($model === 'ModelVocabulary') {
+                        if (!isset($cacheSync[$v_context])) {
                             $q = $model::find([
                                 'context' => $v_context,
-                                'lang'    => 'en'
+                                'lang' => 'en'
                             ], ['name', 'value']);
                             $cacheSync[$v_context] = array_group($q, 'name', 'value');
                         }
@@ -1253,7 +1258,7 @@ class DB_build
                         if (!$cacheSync[$v_context][$insKey]) {
                             Response::error('Error! In "' . $s_key . '(' . $insKey . ')" - is not exists ' . $model);
                         }
-                    }else{
+                    } else {
                         if (!$model::count([$key => $insKey, 'context' => $v_context])) {
                             Response::error('Error! Node "' . $key . '(' . $insKey . ')" - is not exists ' . $model);
                         }
