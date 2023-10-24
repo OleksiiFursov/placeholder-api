@@ -1,27 +1,23 @@
-_id: req_61f2c7aa62554faa8074c43c7710cac3
+_id: req_38958965927546529046672fa679eee6
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698153578801
-created: 1697729203792
-url: http://placeholder-api.test/123456/customer/801
-name: patch
+modified: 1698153840283
+created: 1698152523430
+url: http://placeholder-api.test/123456/customer/clear
+name: clear
 description: ""
-method: PATCH
+method: GET
 body:
   mimeType: application/json
-  text: |-
-    {
-      "username": "test3",
-    	"filter": {
-    		"last_name": "Cruz3"
-    	}
-    }
+  text: ""
 parameters: []
 headers:
   - name: Content-Type
     value: application/json
+  - name: User-Agent
+    value: Insomnia/2023.5.7
 authentication: {}
-metaSortKey: -1698149056558
+metaSortKey: -1698149056758
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true

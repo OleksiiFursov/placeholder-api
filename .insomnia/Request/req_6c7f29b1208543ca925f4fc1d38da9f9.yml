@@ -1,29 +1,38 @@
 _id: req_6c7f29b1208543ca925f4fc1d38da9f9
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698149127741
+modified: 1698153159847
 created: 1697727142006
 url: http://placeholder-api.test/123456/customer
 name: post
 description: ""
 method: POST
 body:
-  mimeType: multipart/form-data
-  params:
-    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
-      name: name
-      value: Article
-      description: ""
-      disabled: false
-    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
-      name: description
-      value: Lorem :)
-      description: ""
-      disabled: false
+  mimeType: application/json
+  text: >-2
+     {
+        "username": "Flossie Preston1",
+        "first_name": "Miles",
+        "last_name": "Cruz",
+        "email": "cruzpreston@opticall.com",
+        "phone": "+1 (981) 505-2082",
+        "createdAt": "2017-01-21T02:22:05 -01:00",
+        "birthday": "1986-03-14T05:09:44 -01:00",
+        "about": "Est duis est aliquip sint veniam mollit do excepteur ad eu. Minim excepteur et tempor deserunt culpa laboris Lorem pariatur aliquip. Sit excepteur sint officia proident. Commodo ex consequat dolor veniam veniam eu do non. Duis culpa do tempor labore nostrud ipsum cillum cillum fugiat tempor.\r\n",
+        "status": 0,
+        "balance": "$3,372.53",
+        "gender": 1,
+        "company": "NIXELT",
+        "address": "773 Portal Street, Vivian, Maryland, 4926",
+        "location": {
+          "lat": -12.927202,
+          "long": 40.937878
+        }
+      }
 parameters: []
 headers:
   - name: Content-Type
-    value: multipart/form-data
+    value: application/json
 authentication: {}
 metaSortKey: -1698149056458
 isPrivate: false
