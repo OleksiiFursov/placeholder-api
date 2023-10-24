@@ -1,9 +1,9 @@
 _id: req_38958965927546529046672fa679eee6
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698153840283
+modified: 1698155570086
 created: 1698152523430
-url: http://placeholder-api.test/123456/customer/clear
+url: http://placeholder.crossfox.online/123456/customer/clear
 name: clear
 description: ""
 method: GET

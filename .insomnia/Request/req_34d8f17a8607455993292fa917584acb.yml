@@ -1,9 +1,9 @@
 _id: req_34d8f17a8607455993292fa917584acb
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698153739595
+modified: 1698155572928
 created: 1697729533621
-url: http://placeholder-api.test/123456/customer
+url: http://placeholder.crossfox.online/123456/customer
 name: delete
 description: ""
 method: DELETE

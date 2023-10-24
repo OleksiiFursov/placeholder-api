@@ -1,9 +1,9 @@
 _id: req_6c7f29b1208543ca925f4fc1d38da9f9
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698153159847
+modified: 1698155582073
 created: 1697727142006
-url: http://placeholder-api.test/123456/customer
+url: http://placeholder.crossfox.online/123456/customer
 name: post
 description: ""
 method: POST

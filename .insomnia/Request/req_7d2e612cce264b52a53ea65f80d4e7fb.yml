@@ -1,9 +1,9 @@
 _id: req_7d2e612cce264b52a53ea65f80d4e7fb
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698153035912
+modified: 1698155518912
 created: 1688377355951
-url: http://placeholder-api.test/123456/customer/get
+url: http://placeholder.crossfox.online/AlexFedorko/customer/get
 name: get
 description: ""
 method: GET
@@ -12,9 +12,8 @@ body:
   text: |-
     {
     	"filter": {
-    		"gender": 0,
-    		"balance": "$1,649.95"
-    	}
+    		"gender": 0
+    	
     }
 parameters:
   - id: pair_9d2aa050d87d45c59c24ada68fa747eb
