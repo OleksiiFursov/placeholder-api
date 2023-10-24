@@ -10,28 +10,30 @@ class Controller extends Model
     }
 
     function delete_wrap($id){
-
-        if(!$id){
+        $filters = GET('filter');
+        if(!$filters && !$id){
             return Response::error('id is required', 422);
         }
-        if(!$this->model::count($id)){
-            return Response::error('Not found id', 404);
+        $where = $id ?? $filters;
+
+        if(!$this->model::count($where)){
+            return Response::error('Not found record', 404);
         }
-        $params = GET();
-        $filters = take($params, 'filters', $id);
-        return $this->model::delete($id);
+        return $this->model::delete($where);
     }
 
     function patch_wrap($id){
-        if(!$id){
+        $params = GET();
+        $filters = take($params, 'filter', $id);
+        if(!$filters && !$id){
             return Response::error('id is required', 422);
         }
-        if(!$this->model::count($id)){
+        $where = $id ?? $filters;
+        if(!$this->model::count($where)){
             return Response::error('Not found id', 404);
         }
-        $params = GET();
-        $filters = take($params, 'filters', $id);
-        return $this->model::update($params, $filters);
+
+        return $this->model::update($params, $where);
     }
     function child($className, $method, $args){
         $className = $className.ucfirst($method);
@@ -108,6 +110,9 @@ class Controller extends Model
     }
     function _delete($id){
         return $this->delete_wrap( $id);
+    }
+    function clear($id){
+        return $this->model::delete();
     }
     function _patch($id){
         return $this->patch_wrap( $id);

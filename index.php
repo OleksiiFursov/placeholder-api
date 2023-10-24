@@ -2,7 +2,7 @@
 
 define('START_TIME', microtime(true));
 define('START_MEMORY', memory_get_peak_usage());
-define("IS_DEV", true);
+define("IS_DEV", false);
 
 
 ini_set('error_reporting', -1);
@@ -14,7 +14,7 @@ add_event('router.before', function($args){
 
     $token = array_shift($args['router']);
     ini('user.token', $token);
-    if ($token && preg_match('#^[0-9a-f]+$#', $token)) {
+    if ($token && preg_match('#^[0-9a-zA-Z]+$#', $token)) {
         add_event('DB_build.run', function ($args) use ($token) {
             if($args['context']->type !== 'insert'){
                 $args['context']->where(['tu' => $token]);
@@ -23,11 +23,11 @@ add_event('router.before', function($args){
 
         $q = ModelSysUsers::findOne();
         if (!$q) {
-            Response::end('Не верный токен в URL', 403);
+            Response::end('Invalid URL-token', 403);
         }
         ini('sys_user', $q);
     } else {
-        Response::end('Не передан в токен в URL', 403);
+        Response::end('Not fined token', 403);
     }
 });
 require DIR.'/system/router.php';
