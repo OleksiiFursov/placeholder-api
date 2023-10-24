@@ -1,0 +1,23 @@
+_id: req_3f3e69d5ffdf447290d19e76dd004afe
+type: Request
+parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
+modified: 1698151637735
+created: 1698151591425
+url: http://placeholder-api.test/123456/customer/clear
+name: clear
+description: ""
+method: GET
+body: {}
+parameters: []
+headers:
+  - name: User-Agent
+    value: Insomnia/2023.5.7
+authentication: {}
+metaSortKey: -1698149056758
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
