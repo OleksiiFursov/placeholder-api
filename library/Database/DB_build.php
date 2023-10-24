@@ -270,7 +270,7 @@ class DB_build
                 }
                 if ($result) {
                     $this->insert_id = $this->db->insert_id;
-                    return $this->insert_id;
+                    return $this->insert_id ?? true;
                 }
 
                 break;

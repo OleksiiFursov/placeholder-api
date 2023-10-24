@@ -10,16 +10,19 @@ if ((defined('IS_DEV') && IS_DEV) || isset($_GET['debug'])) {
     error_reporting(-1);
     ini_set('display_startup_errors', 1);
 
-    //define('IS_DEV', true);
+   // define('IS_DEV', true);
 }
 
 
 set_error_handler(['Errors', 'captureNormal']);
 set_exception_handler(['Errors', 'captureException']);
 register_shutdown_function(['Errors', 'captureShutdown']);
-if ($_SERVER['REQUEST_METHOD'] === 'PATCH' || $_SERVER['REQUEST_METHOD'] === 'DELETE') {
+if (in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST', 'PATCH', 'DELETE'])) {
     $input = file_get_contents('php://input');
 
+    if(!isset($_SERVER['CONTENT_TYPE'])){
+        Response::end('Invalid content type');
+    }
     // Extracting the boundary
     preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
     if (!$matches) {
