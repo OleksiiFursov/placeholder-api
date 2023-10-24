@@ -89,7 +89,7 @@ class BaseModel
         $columns = array_keys(static::$columns);
         $res = [];
         for ($i = 0, $len = sizeof($columns); $i < $len; $i++) {
-            if (in_array($columns[$i], ['id', 'date_created', 'date_updated', 'date', 'time_update'])) {
+            if (in_array($columns[$i], ['id', 'date_created', 'date_updated'])) {
                 continue;
             }
             $res[] = $columns[$i];

@@ -97,5 +97,24 @@ class Controller extends Model
         return [$filters, $params];
     }
 
+    // Method magic
+    function _get($id){
+        $filter = GET('filter') ?? $id;
+        return $this->model::find($filter);
+    }
+    function _post(){
+        $params = GET();
+        return $this->model::insert($params);
+    }
+    function _delete($id){
+        return $this->delete_wrap( $id);
+    }
+    function _patch($id){
+        return $this->patch_wrap( $id);
+    }
+    function add(){
+        return $this->_post();
+    }
+
 
 }

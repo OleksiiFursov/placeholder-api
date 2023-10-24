@@ -1,28 +1,35 @@
 <?php
 
-class CI_Todo extends Controller{
-    public function __construct()
-    {
+class CI_Todo extends Controller
+{
+    public string|ModelTodo $model = "ModelTodo";
 
-    }
-    function _get($id){
-        $filter = GET('filter') ?? $id;
-        return ModelCustomer::find($filter);
-    }
-    function _post(){
-        $params = GET();
-        return ModelCustomer::insert($params);
-    }
-    function _delete($id){
-        return ModelCustomer::delete($id);
-    }
-    function _patch($id){
-        $params = GET();
-        $filters = take($params, 'filters', $id);
-        //notice(GET());
-        return ModelCustomer::update($params, $filters);
-    }
-    function add(){
-        return $this->_post();
+    function demo()
+    {
+        $params = array_merge([
+            'reset_vocabulary' => true,
+            'reset' => true
+        ], GET());
+
+        if ($params['reset_vocabulary']) {
+
+            ModelVocabulary::delete([
+                'context' => ['todo-priority', 'todo-status']
+            ]);
+
+
+            ModelVocabulary::insert(gen_voc('todo-status', [
+                "Not Started", "In Progress", "Completed", "On Hold"
+            ]));
+            ModelVocabulary::insert(gen_voc('todo-priority', [
+                "Low", "Medium", "High"
+            ]));
+        }
+        if ($params['reset']) {
+            $this->model::delete();
+        }
+        $folder = str_replace('CI_', '', __class__);
+        $res = file_get_contents(DIR . '/model/' . $folder . '/demo.json');
+        return $this->model::insert(json_decode($res, true));
     }
 }

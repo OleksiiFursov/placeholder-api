@@ -491,3 +491,14 @@ function takes(&$arr, $keys, $options=[]){
     return $res;
 }
 
+function gen_voc($context, $arr){
+    $res = [];
+    foreach( $arr as $k=>$v){
+        $res[] = [
+            'context' => $context,
+            'name' => (string)$k,
+            'value' => $v
+        ];
+    }
+    return $res;
+}
