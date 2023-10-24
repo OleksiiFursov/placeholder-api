@@ -17,6 +17,12 @@ if ((defined('IS_DEV') && IS_DEV) || isset($_GET['debug'])) {
 set_error_handler(['Errors', 'captureNormal']);
 set_exception_handler(['Errors', 'captureException']);
 register_shutdown_function(['Errors', 'captureShutdown']);
+
+if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
+    echo "<h1>Hello! This is CrossFox Placeholder API :)</h1>";
+    exit;
+}
+
 if (in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST', 'PATCH', 'DELETE'])) {
     $input = file_get_contents('php://input');
 
