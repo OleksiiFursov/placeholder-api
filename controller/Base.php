@@ -10,11 +10,9 @@ class CI_Base extends Controller
     public function root(){
         return "It's base url root";
     }
-
     function NOT_FOUND(){
         return Response::error('Страница не найдена', 404);
     }
-
     function not_exists_class(){
         return $this->error_404();
     }

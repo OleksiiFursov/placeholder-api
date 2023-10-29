@@ -2,7 +2,6 @@
 
 class CI_tools extends Controller
 {
-
     public function __construct()
     {
         //ini('auth.not_auto', true);

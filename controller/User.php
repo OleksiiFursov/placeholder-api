@@ -21,28 +21,6 @@ class CI_User extends Controller
     }
     function logout()
     {
-        return Response::out($this->model->logout(GET()));
-    }
-
-    public function phonecheck($filters = NULL)
-    {
-        [$filters, $params] = $this->get_params([], [], [
-            'phone' => 'value'
-        ]);
-
-        return $this->model->phonecheck($filters, $params);
-
-    }
-    function key_add()
-    {
-        $arr = GET(null, 'POST');
-        $Phones = new Phones;
-        return Response::out($Phones->key_add($arr));
-    }
-    function key_check()
-    {
-        $arr = GET(null, 'POST');
-        $Phones = new Phones;
-        return Response::out($Phones->key_check($arr));
+        return $this->model->logout(GET());
     }
 }
