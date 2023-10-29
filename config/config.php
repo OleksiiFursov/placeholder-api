@@ -17,7 +17,7 @@ $conf = [
     'router.class_main'  => 'Main',
     'router.method_main' => 'index',
     'router.method_404'  => 'index',
-    'router.class_404'  =>  'Error',
+    'router.class_404'  =>  'Base',
 
     //SYSTEM
     'system.mode'   => 'api',
