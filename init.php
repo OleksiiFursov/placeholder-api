@@ -10,7 +10,7 @@ if ((defined('IS_DEV') && IS_DEV) || isset($_GET['debug'])) {
     error_reporting(-1);
     ini_set('display_startup_errors', 1);
 
-   // define('IS_DEV', true);
+    // define('IS_DEV', true);
 }
 
 
@@ -26,39 +26,38 @@ register_shutdown_function(['Errors', 'captureShutdown']);
 if (in_array($_SERVER['REQUEST_METHOD'], ['GET', 'POST', 'PATCH', 'DELETE'])) {
     $input = file_get_contents('php://input');
 
-    if(!isset($_SERVER['CONTENT_TYPE'])){
-        Response::end('Invalid content type');
-    }
-    // Extracting the boundary
-    preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-    if (!$matches) {
-        $_REQUEST += json_decode($input, true) ?? [];
-    } else {
-        $boundary = $matches[1];
+    if (isset($_SERVER['CONTENT_TYPE'])) {
+        // Extracting the boundary
+        preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+        if (!$matches) {
+            $_REQUEST += json_decode($input, true) ?? [];
+        } else {
+            $boundary = $matches[1];
 
-        // Splitting the data using the boundary
-        $blocks = preg_split("/-+$boundary/", $input);
-        array_pop($blocks);
+            // Splitting the data using the boundary
+            $blocks = preg_split("/-+$boundary/", $input);
+            array_pop($blocks);
 
-        $data = [];
-        foreach ($blocks as $id => $block) {
-            if (empty($block))
-                continue;
+            $data = [];
+            foreach ($blocks as $id => $block) {
+                if (empty($block))
+                    continue;
 
-            if (str_contains($block, 'application/octet-stream')) {
-                // Handle files here
-                continue;
+                if (str_contains($block, 'application/octet-stream')) {
+                    // Handle files here
+                    continue;
+                }
+
+                if (preg_match('/name="([^"]+)"\s*([\s\S]+)/', $block, $matches)) {
+                    $name = $matches[1];
+                    $value = rtrim($matches[2]);
+
+                    // Storing the parsed values
+                    $data[$name] = $value;
+                }
             }
-
-            if (preg_match('/name="([^"]+)"\s*([\s\S]+)/', $block, $matches)) {
-                $name = $matches[1];
-                $value = rtrim($matches[2]);
-
-                // Storing the parsed values
-                $data[$name] = $value;
-            }
+            $_REQUEST += $data;
         }
-        $_REQUEST += $data;
     }
 }
 //    if (!sizeof($_POST)) {
