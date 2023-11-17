@@ -2,6 +2,7 @@
 
 class Controller extends Model
 {
+    /** @property model BaseModel */
     public $is_public = false;
     function __call($method, $arguments)
     {
@@ -101,8 +102,22 @@ class Controller extends Model
 
     // Method magic
     function _get($id){
-        $filter = GET('filter') ?? $id;
-        return $this->model::find($filter);
+        $filter = GET('filter') ? GET('filter'):  $id;
+        $q = $this->model::select(GET('fields'))->where($filter);
+
+        if(GET('limit')){
+            $q->limit(GET('limit'));
+        }
+
+        if(GET('order')){
+            $q->order(GET('order'), GET('orderDirection', 'ASC'));
+        }
+
+        if(GET('offset')){
+            $q->offset(GET('offset'));
+        }
+
+        return $q->run();
     }
     function _post(){
         $params = GET();
@@ -120,6 +135,5 @@ class Controller extends Model
     function add(){
         return $this->_post();
     }
-
 
 }

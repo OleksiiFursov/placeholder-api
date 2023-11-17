@@ -90,7 +90,7 @@ class DB_build
                 $_limit .= $this->offset . ', ';
             }
 
-            $_limit .= (int)$this->limit ?? 999999999;
+            $_limit .= $this->limit ? $this->limit:  999999999;
 
         } else {
             $_limit = '';
