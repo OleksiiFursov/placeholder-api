@@ -1,26 +1,23 @@
-_id: req_b1479b9f3d2a479b9c13aaa271fb3820
+_id: req_38958965927546529046672fa679eee6
 type: Request
-parentId: fld_6894aca61c8647ce854c322fe640c550
-modified: 1698155596447
-created: 1698149093396
-url: http://placeholder.crossfox.online/123456/todo
-name: delete
+parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
+modified: 1698155570086
+created: 1698152523430
+url: http://placeholder.crossfox.online/123456/customer/clear
+name: clear
 description: ""
-method: DELETE
+method: GET
 body:
   mimeType: application/json
-  text: |-
-    {
-    	"filter": {
-    		"id": [19, 25] 
-    	}
-    }
+  text: ""
 parameters: []
 headers:
   - name: Content-Type
     value: application/json
+  - name: User-Agent
+    value: Insomnia/2023.5.7
 authentication: {}
-metaSortKey: -1698149056658
+metaSortKey: -1698149056758
 isPrivate: false
 settingStoreCookies: true
 settingSendCookies: true

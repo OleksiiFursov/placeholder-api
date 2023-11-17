@@ -1,25 +1,20 @@
 _id: req_7d2e612cce264b52a53ea65f80d4e7fb
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698149056316
+modified: 1698155518912
 created: 1688377355951
-url: http://placeholder-api.test/123456/customer/get
+url: http://placeholder.crossfox.online/AlexFedorko/customer/get
 name: get
 description: ""
 method: GET
 body:
-  mimeType: multipart/form-data
-  params:
-    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
-      name: ""
-      value: "1"
-      description: ""
-      disabled: true
-    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
-      name: password
-      value: "123456"
-      description: ""
-      disabled: true
+  mimeType: application/json
+  text: |-
+    {
+    	"filter": {
+    		"gender": 0
+    	
+    }
 parameters:
   - id: pair_9d2aa050d87d45c59c24ada68fa747eb
     name: filter[status]
@@ -33,7 +28,7 @@ parameters:
     disabled: true
 headers:
   - name: Content-Type
-    value: multipart/form-data
+    value: application/json
 authentication: {}
 metaSortKey: -1698149056258
 isPrivate: false

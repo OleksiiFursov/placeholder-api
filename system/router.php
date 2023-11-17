@@ -108,7 +108,7 @@ if (!$method_name || !method_exists($obj, $method_name)) {
         include DIR . '/controller/Base.php';
         $obj = new CI_Base;
         $method_args = $method_name;
-        $method_name = 'NOT_FOUND';
+        $method_name = 'error_404';
     }
 
     ini('router.method_name', $method_name);

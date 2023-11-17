@@ -1,5 +1,4 @@
 <?php
-
 class CI_Todo extends Controller
 {
     public string|ModelTodo $model = "ModelTodo";

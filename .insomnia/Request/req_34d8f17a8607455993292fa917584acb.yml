@@ -1,29 +1,22 @@
 _id: req_34d8f17a8607455993292fa917584acb
 type: Request
 parentId: fld_3ec5b9e1d4284fdcb3a33a959078f71a
-modified: 1698149075457
+modified: 1698155572928
 created: 1697729533621
-url: http://placeholder-api.test/123456/customer/299
+url: http://placeholder.crossfox.online/123456/customer
 name: delete
 description: ""
 method: DELETE
 body:
-  mimeType: multipart/form-data
-  params:
-    - id: pair_4cd4454f9bb74c26aaee051dad94fa07
-      name: name
-      value: Article2
-      description: ""
-      disabled: true
-    - id: pair_61ff1c6a8b2e4fafba259c41fc38debe
-      name: description
-      value: Lorem :)
-      description: ""
-      disabled: true
+  mimeType: application/json
+  text: |-
+    {"filter": {
+    	"status": 0
+    }}
 parameters: []
 headers:
   - name: Content-Type
-    value: multipart/form-data
+    value: application/json
 authentication: {}
 metaSortKey: -1698149056658
 isPrivate: false
